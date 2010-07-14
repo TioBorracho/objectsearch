@@ -1,0 +1,64 @@
+package com.jklas.search.interceptors;
+
+import com.jklas.search.exception.IndexObjectException;
+import com.jklas.search.index.dto.IndexObjectDto;
+import com.jklas.search.indexer.IndexerService;
+
+/**
+ * 
+ * Esto se ejecuta en la transacción de negocio.
+ * 
+ * @author Julián
+ *
+ */
+public class SearchInterceptor {
+	
+	private IndexerService indexerService;
+	
+	@SuppressWarnings("unused")
+	private SearchInterceptor() {}
+	
+	public SearchInterceptor(IndexerService indexerService) {
+		this.indexerService = indexerService;
+	}
+	
+	public void setIndexerService(IndexerService indexerService) {
+		this.indexerService = indexerService;
+	}
+	
+	public IndexerService getIndexerService() {
+		return indexerService;
+	}
+	
+	public void createOrUpdate(IndexObjectDto indexObjectDto) throws IndexObjectException {
+		try {
+			indexerService.createOrUpdate(indexObjectDto);
+		} catch (IndexObjectException e) {
+			throw new IndexObjectException("Error al indexar "+indexObjectDto,e);
+		}		
+	}
+		
+	public void delete(IndexObjectDto indexObjectDto ) throws IndexObjectException {		
+		try {
+			indexerService.delete(indexObjectDto);
+		} catch (IndexObjectException e) {
+			throw new IndexObjectException("Error al indexar "+indexObjectDto,e);
+		}
+	}
+
+	public void update(IndexObjectDto indexObjectDto) throws IndexObjectException {
+		try {
+			indexerService.update(indexObjectDto);
+		} catch (IndexObjectException e) {
+			throw new IndexObjectException("Error al indexar "+indexObjectDto,e);
+		}
+	}
+	
+	public void create(IndexObjectDto indexObjectDto) throws IndexObjectException {		
+		try {
+			indexerService.create(indexObjectDto);
+		} catch (IndexObjectException e) {
+			throw new IndexObjectException("Error al indexar "+indexObjectDto,e);
+		}
+	}
+}

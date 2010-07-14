@@ -1,0 +1,202 @@
+package com.jklas.search.indexer;
+
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import com.jklas.search.SearchEngine;
+import com.jklas.search.configuration.SearchConfiguration;
+import com.jklas.search.configuration.SearchMapping;
+import com.jklas.search.exception.IndexObjectException;
+import com.jklas.search.exception.SearchEngineException;
+import com.jklas.search.index.IndexId;
+import com.jklas.search.index.IndexWriter;
+import com.jklas.search.index.IndexWriterFactory;
+import com.jklas.search.index.ObjectKey;
+import com.jklas.search.index.PostingMetadata;
+import com.jklas.search.index.Term;
+import com.jklas.search.index.dto.IndexObjectDto;
+import com.jklas.search.indexer.pipeline.IndexingPipeline;
+import com.jklas.search.indexer.pipeline.SemiIndex;
+import com.jklas.search.util.SearchLibrary;
+
+public class DefaultIndexerService implements IndexerService {
+
+	private IndexingPipeline indexingPipeline;
+
+	private final IndexWriterFactory writerFactory;
+		
+	public DefaultIndexerService(IndexingPipeline indexingPipeline, IndexWriterFactory factory) {
+		setIndexingPipeline(indexingPipeline);
+		this.writerFactory = factory;
+	}
+
+	@Override
+	public void create(Object entity) throws IndexObjectException {
+		LinkedList<Object> linkedList = new LinkedList<Object>();
+		linkedList.add(entity);
+		bulkCreate(linkedList);
+	}
+
+
+	@Override
+	public void createOrUpdate(Object entity) throws IndexObjectException {
+		delete(entity);
+		create(entity);
+	}
+
+	@Override
+	public void delete(Object entity) throws IndexObjectException {
+		
+		SearchConfiguration configuration = SearchEngine.getInstance().getConfiguration();
+		
+		Class<?> clazz = entity.getClass();
+		
+		if(!configuration.isMapped(clazz)) throw new IndexObjectException("Can't delete object since class "+clazz+" isn't mapped");
+				
+		SearchMapping mapping = configuration.getMapping(entity.getClass());
+
+		try {
+			IndexId indexId = mapping.getIndexSelector().selectIndex(entity);
+			IndexObjectDto indexObjectDto = new IndexObjectDto(entity);
+			indexObjectDto.setIndexId(indexId);
+			writerFactory.getIndexWriter().openDeleteAndClose(indexObjectDto);
+		} catch (SearchEngineException e) {
+			throw new IndexObjectException("Couldn't get the index id for entity: "+entity,e);
+		}
+	}
+
+	@Override
+	public void update(Object entity) throws IndexObjectException {
+		delete(entity);
+		create(entity);
+	}
+
+	public void setIndexingPipeline(IndexingPipeline indexingPipeline) {
+		this.indexingPipeline = indexingPipeline;
+	}
+
+	@Override
+	public void create(IndexObjectDto indexObjectDto) throws IndexObjectException {
+		nullCheck(indexObjectDto);
+		create(indexObjectDto.getEntity());		
+	}
+
+	@Override
+	public void createOrUpdate(IndexObjectDto indexObjectDto) throws IndexObjectException {
+		nullCheck(indexObjectDto);
+		createOrUpdate(indexObjectDto.getEntity());		
+	}
+
+	@Override
+	public void delete(IndexObjectDto indexObjectDto) throws IndexObjectException {
+		nullCheck(indexObjectDto);
+		delete(indexObjectDto.getEntity());		
+	}
+
+	@Override
+	public void update(IndexObjectDto indexObjectDto) throws IndexObjectException {
+		nullCheck(indexObjectDto);
+		update(indexObjectDto.getEntity());		
+	}
+
+	private void nullCheck(IndexObjectDto indexObjectDto) throws IndexObjectException {
+		if(indexObjectDto == null) throw new IndexObjectException("Can't index a null entity");
+	}
+
+	@Override
+	public void bulkCreate(List<?> entities) throws IndexObjectException {
+		HashMap<IndexId, IndexWriter> openWriters = new HashMap<IndexId, IndexWriter>();
+		try {
+			for (Object entity : entities) {
+				if(entity == null) throw new IndexObjectException("Can't index null entities");
+
+				SemiIndex semiIndex = indexingPipeline.processObject(entity);
+
+				for (Entry<IndexObjectDto, Map<Term,PostingMetadata>> semiIndexEntry: semiIndex.getSemiIndexMap().entrySet()) {
+					IndexObjectDto current = semiIndexEntry.getKey();
+
+					IndexId currentIndexId = current.getIndexId();
+					IndexWriter writer ;
+					if(openWriters.containsKey(currentIndexId)) writer = openWriters.get(currentIndexId);
+					else {
+						writer = writerFactory.getIndexWriter();
+						openWriters.put(currentIndexId, writer);
+						writer.open(currentIndexId);
+					}
+
+					Map<Term,PostingMetadata> termPostingMap = semiIndexEntry.getValue();
+					Class<?> currentObjectClass = current.getEntity().getClass();
+					Serializable currentObjectId = current.getId();
+
+					for (Map.Entry<Term, PostingMetadata> entry: termPostingMap.entrySet()) {
+						Term term = entry.getKey();
+						ObjectKey key = new ObjectKey(currentObjectClass,currentObjectId);
+
+						writer.write(term, key, entry.getValue());
+					}
+				}
+			}
+		} finally {
+			for (IndexWriter writer : openWriters.values()) {
+				writer.close();
+			}
+		}
+	}
+
+	@Override
+	public void bulkCreateOrUpdate(List<?> entity) throws IndexObjectException {
+		bulkDelete(entity);
+		bulkCreate(entity);
+	}
+
+	@Override
+	public void bulkDelete(List<?> entities) throws IndexObjectException {
+		IndexWriter indexWriter = writerFactory.getIndexWriter();
+
+		try {
+			for (Object entity: entities) {	
+				IndexObjectDto indexObjectDto = new IndexObjectDto(entity);
+				indexWriter.delete(indexObjectDto);
+			}
+		} finally {
+			indexWriter.close();
+		}
+	}
+
+	@Override
+	public void bulkDtoCreate(List<IndexObjectDto> indexObjectDto) throws IndexObjectException {
+		List<Object> entities = SearchLibrary.convertDtoListToEntityList(indexObjectDto);
+		
+		bulkCreate(entities);
+	}
+
+	@Override
+	public void bulkDtoCreateOrUpdate(List<IndexObjectDto> indexObjectDto) throws IndexObjectException {
+		bulkDtoDelete(indexObjectDto);
+		bulkDtoCreate(indexObjectDto);
+	}
+
+	@Override
+	public void bulkDtoDelete(List<IndexObjectDto> indexObjectDto) throws IndexObjectException {
+		List<Object> entities = SearchLibrary.convertDtoListToEntityList(indexObjectDto);		
+		bulkDelete(entities);
+	}
+
+	
+
+	@Override
+	public void bulkDtoUpdate(List<IndexObjectDto> indexObjectDto) throws IndexObjectException {
+		List<Object> entities = SearchLibrary.convertDtoListToEntityList(indexObjectDto);		
+		bulkUpdate(entities);
+	}
+
+	@Override
+	public void bulkUpdate(List<?> entities) throws IndexObjectException {
+		bulkDelete(entities);
+		bulkCreate(entities);
+	}
+}
