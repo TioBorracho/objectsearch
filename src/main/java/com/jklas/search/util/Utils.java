@@ -3,8 +3,6 @@ package com.jklas.search.util;
 import java.io.Serializable;
 import java.util.Arrays;
 
-import org.junit.Assert;
-
 import com.jklas.search.annotations.Indexable;
 import com.jklas.search.annotations.SearchField;
 import com.jklas.search.annotations.SearchFilter;
@@ -24,8 +22,7 @@ public class Utils {
 		for (int i = 0; i < entities.length; i++) {
 			try {
 				AnnotationConfigurationMapper.configureAndMap(entities[i], true);
-			} catch (SearchEngineMappingException e) {
-				Assert.fail();
+			} catch (SearchEngineMappingException e) {				
 				throw new RuntimeException("this shouldn't happened.. mapping failed!",e);
 			}
 
@@ -36,7 +33,6 @@ public class Utils {
 			try {
 				dis.bulkCreate(Arrays.asList(entities[i]));				
 			} catch (IndexObjectException e) {
-				Assert.fail();
 				throw new RuntimeException("this shouldn't happened.. can't construct IndexObjectDto",e);
 			}
 
