@@ -11,9 +11,9 @@
 	<url>http://maven.apache.org</url>
 
 	 <scm>
-		<connection>scm:git:ssh://jklas@modelsearch.git.sourceforge.net/gitroot/modelsearch/search.git</connection>
-		<url>scm:git:ssh://jklas@modelsearch.git.sourceforge.net/gitroot/modelsearch/search.git</url>
-		<developerConnection>scm:git:ssh://jklas@modelsearch.git.sourceforge.net/gitroot/modelsearch/search.git</developerConnection>	
+		<connection>scm:git:git://modelsearch.git.sourceforge.net/gitroot/modelsearch/search</connection>
+		<url>http://modelsearch.git.sourceforge.net/git/gitweb.cgi?p=modelsearch/search</url>
+		<developerConnection>scm:git:ssh://jklas@modelsearch.git.sourceforge.net/gitroot/modelsearch/search</developerConnection>	
 	</scm>
 
 	<build>
