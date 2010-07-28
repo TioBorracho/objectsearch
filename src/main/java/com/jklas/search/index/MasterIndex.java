@@ -20,6 +20,7 @@ public interface MasterIndex {
 	 */
 	public abstract void removeFromMasterRegistry(ObjectKey key);
 
-	
 	public abstract Iterator<Entry<ObjectKey, MasterRegistryEntry>> getMasterRegistryReadIterator();
+
+	public abstract int getObjectCount();
 }

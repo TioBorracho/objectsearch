@@ -4,13 +4,6 @@ package com.jklas.search.index;
 
 public interface InvertedIndex {
 
-	/**
-	 * Adds a posting to the inverted index.
-	 * 
-	 * @param term the word for which the posting will be added
-	 * @param posting the added posting
-	 */
-	public abstract void addToIndex(Term term, ObjectKey posting, PostingMetadata metadata);
 	
 	/**
 	 * 
@@ -40,4 +33,6 @@ public interface InvertedIndex {
 	
 	public abstract int getTermDictionarySize();
 
+	public abstract void removePosting(Term term, ObjectKey key);
+	
 }

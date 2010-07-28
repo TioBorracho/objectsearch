@@ -5,6 +5,14 @@ import java.util.List;
 public interface MasterAndInvertedIndex extends InvertedIndex, MasterIndex{
 
 	/**
+	 * Adds a posting to the inverted index.
+	 * 
+	 * @param term the word for which the posting will be added
+	 * @param posting the added posting
+	 */
+	public abstract void addToIndex(Term term, ObjectKey posting, PostingMetadata metadata);
+	
+	/**
 	 * Removes a key from the master registry and
 	 * from the inverted index.
 	 * 
@@ -17,7 +25,4 @@ public interface MasterAndInvertedIndex extends InvertedIndex, MasterIndex{
 	
 	public abstract void consistentRemove(ObjectKey key);
 	
-	public abstract void removePosting(Term term, ObjectKey key);
-	
-	public abstract int getObjectCount();
 }

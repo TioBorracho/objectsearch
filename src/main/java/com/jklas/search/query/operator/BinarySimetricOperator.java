@@ -1,33 +1,13 @@
 package com.jklas.search.query.operator;
 
 import com.jklas.search.engine.dto.ObjectResult;
-import com.jklas.search.index.Term;
 
 
 
-public abstract class BinarySimetricOperator<E extends ObjectResult> extends Operator<E> {
-	
-	private final Operator<E> leftOperator;
-	
-	private final Operator<E> rightOperator;
+public abstract class BinarySimetricOperator<E extends ObjectResult> extends BinaryOperator<E> {
 	
 	public BinarySimetricOperator(Operator<E> leftOperator, Operator<E> rightOperator) {
-		if(leftOperator == null || rightOperator == null) throw new IllegalArgumentException("Can't accept null operators... leafs must have unary operators");
-		this.leftOperator = leftOperator;
-		this.rightOperator = rightOperator;
-	}
-	
-	public Operator<E> getLeft() {
-		return leftOperator;
-	}
-	
-	public Operator<E> getRight() {
-		return rightOperator;
-	}
-
-	@Override
-	public int hashCode() {		
-		return 31 * (leftOperator.hashCode()+rightOperator.hashCode());
+		super(leftOperator, rightOperator);
 	}
 
 	@Override
@@ -42,15 +22,8 @@ public abstract class BinarySimetricOperator<E extends ObjectResult> extends Ope
 		
 		BinarySimetricOperator<?> other = (BinarySimetricOperator<?>) obj;
 		
-		return (leftOperator.equals(other.leftOperator) && rightOperator.equals(other.rightOperator)) ||
-			(leftOperator.equals(other.rightOperator) && rightOperator.equals(other.leftOperator));		
+		return (getLeft().equals(other.getLeft()) && getRight().equals(other.getRight())) ||
+			(getLeft().equals(other.getRight()) && getRight().equals(other.getLeft()));		
 	}
-	
-	public abstract Term getOperatorTerm();
-	
-	@Override
-	public String toString() {	
-		return "("+getLeft().toString()+" "+getOperatorTerm()+" "+getRight().toString()+")";
-	}
-	
+		
 }

@@ -7,9 +7,9 @@ import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.jklas.search.annotations.IndexReference;
 import com.jklas.search.annotations.Indexable;
 import com.jklas.search.annotations.IndexableContainer;
-import com.jklas.search.annotations.IndexReference;
 import com.jklas.search.annotations.SearchCollection;
 import com.jklas.search.annotations.SearchField;
 import com.jklas.search.annotations.SearchId;
@@ -31,6 +31,7 @@ import com.jklas.search.query.bool.BooleanPostingListExtractor;
 import com.jklas.search.query.bool.BooleanQuery;
 import com.jklas.search.query.bool.BooleanQueryParser;
 import com.jklas.search.query.operator.AndOperator;
+import com.jklas.search.query.operator.MinusOperator;
 import com.jklas.search.query.operator.OrOperator;
 import com.jklas.search.query.operator.RetrieveOperator;
 import com.jklas.search.util.TextLibrary;
@@ -109,6 +110,49 @@ public class BooleanRetrievalTest {
 	}
 
 	@Test
+	public void NotParsing() {
+		BooleanQueryParser parser = new BooleanQueryParser("these +NOT those");
+		BooleanQuery query = parser.getQuery();
+
+		RetrieveOperator<ObjectKeyResult> these = new RetrieveOperator<ObjectKeyResult>(new Term("these"),extractor);
+		RetrieveOperator<ObjectKeyResult> those = new RetrieveOperator<ObjectKeyResult>(new Term("those"),extractor);
+
+		MinusOperator<ObjectKeyResult> not = new MinusOperator<ObjectKeyResult>(these,those);
+
+		Assert.assertEquals(not,query.getRootOperator());
+	}
+
+	@Test
+	public void DoubleNotParsing() {
+		BooleanQueryParser parser = new BooleanQueryParser("these +NOT those +NOT that");
+		BooleanQuery query = parser.getQuery();
+
+		RetrieveOperator<ObjectKeyResult> these = new RetrieveOperator<ObjectKeyResult>(new Term("these"),extractor);
+		RetrieveOperator<ObjectKeyResult> those = new RetrieveOperator<ObjectKeyResult>(new Term("those"),extractor);
+		RetrieveOperator<ObjectKeyResult> that = new RetrieveOperator<ObjectKeyResult>(new Term("that"),extractor);
+		
+		MinusOperator<ObjectKeyResult> notThat = new MinusOperator<ObjectKeyResult>(these,that);
+		MinusOperator<ObjectKeyResult> notThose = new MinusOperator<ObjectKeyResult>(notThat, those);
+		
+		Assert.assertEquals(notThose,query.getRootOperator());
+	}
+	
+	@Test
+	public void ReverseDoubleNotParsing() {
+		BooleanQueryParser parser = new BooleanQueryParser("these +NOT that +NOT those ");
+		BooleanQuery query = parser.getQuery();
+
+		RetrieveOperator<ObjectKeyResult> these = new RetrieveOperator<ObjectKeyResult>(new Term("these"),extractor);
+		RetrieveOperator<ObjectKeyResult> those = new RetrieveOperator<ObjectKeyResult>(new Term("those"),extractor);
+		RetrieveOperator<ObjectKeyResult> that = new RetrieveOperator<ObjectKeyResult>(new Term("that"),extractor);
+		
+		MinusOperator<ObjectKeyResult> notThose = new MinusOperator<ObjectKeyResult>(these,those);
+		MinusOperator<ObjectKeyResult> notThat = new MinusOperator<ObjectKeyResult>(notThose, that);
+		
+		Assert.assertEquals(notThat,query.getRootOperator());
+	}
+	
+	@Test
 	public void TwoAndAndTwoOrIsParsedAsFourOperators() {
 		BooleanQueryParser parser = new BooleanQueryParser("search +AND find +OR search +AND lookup");
 		BooleanQuery query = parser.getQuery();
@@ -127,6 +171,27 @@ public class BooleanRetrievalTest {
 	}
 
 	@Test
+	public void TwoAndAndTwoOrAndOneNotIsParsedAsFiveOperators() {
+		BooleanQueryParser parser = new BooleanQueryParser("search +AND find +OR search +AND lookup +NOT browse");
+		BooleanQuery query = parser.getQuery();
+
+		RetrieveOperator<ObjectKeyResult> search1 = new RetrieveOperator<ObjectKeyResult>(new Term("search"),extractor);
+		RetrieveOperator<ObjectKeyResult> find = new RetrieveOperator<ObjectKeyResult>(new Term("find"),extractor);
+		RetrieveOperator<ObjectKeyResult> search2 = new RetrieveOperator<ObjectKeyResult>(new Term("search"),extractor);
+		RetrieveOperator<ObjectKeyResult> lookup = new RetrieveOperator<ObjectKeyResult>(new Term("lookup"),extractor);		
+		RetrieveOperator<ObjectKeyResult> browse = new RetrieveOperator<ObjectKeyResult>(new Term("browse"),extractor);		
+		
+		AndOperator<ObjectKeyResult> and1 = new AndOperator<ObjectKeyResult>(search1, find); 
+		AndOperator<ObjectKeyResult> and2 = new AndOperator<ObjectKeyResult>(search2, lookup);
+		OrOperator<ObjectKeyResult> or = new OrOperator<ObjectKeyResult>(and1, and2);
+		MinusOperator<ObjectKeyResult> minus = new MinusOperator<ObjectKeyResult>(or, browse);
+		
+		Assert.assertEquals(minus, query.getRootOperator());
+
+	}
+
+	
+	@Test
 	public void AndAtTheBeginningIsOptional() {
 		BooleanQueryParser parser = new BooleanQueryParser("+AND find");
 		BooleanQuery queryWithExplicitAnd = parser.getQuery();
@@ -136,9 +201,23 @@ public class BooleanRetrievalTest {
 		Assert.assertEquals(find, queryWithExplicitAnd.getRootOperator());
 
 	}
-
+	
 	@Test
 	public void IllegalQueriesThrowsException() {
+		try {
+			new BooleanQueryParser("+NOT").getQuery();			
+			Assert.fail();
+		} catch(IllegalArgumentException iau) {
+			Assert.assertTrue(true);
+		}
+		
+		try {
+			new BooleanQueryParser("+OR").getQuery();			
+			Assert.fail();
+		} catch(IllegalArgumentException iau) {
+			Assert.assertTrue(true);
+		}
+
 		try {
 			new BooleanQueryParser("+AND").getQuery();			
 			Assert.fail();
@@ -147,12 +226,47 @@ public class BooleanRetrievalTest {
 		}
 
 		try {
+			new BooleanQueryParser("+NOT +NOT").getQuery();			
+			Assert.fail();
+		} catch(IllegalArgumentException iau) {
+			Assert.assertTrue(true);
+		}
+		
+		try {
+			new BooleanQueryParser("+OR +OR").getQuery();			
+			Assert.fail();
+		} catch(IllegalArgumentException iau) {
+			Assert.assertTrue(true);
+		}
+		
+		try {
 			new BooleanQueryParser("+AND +AND").getQuery();			
 			Assert.fail();
 		} catch(IllegalArgumentException iau) {
 			Assert.assertTrue(true);
 		}
 
+		try {
+			new BooleanQueryParser("+AND +NOT search").getQuery();			
+			Assert.fail();
+		} catch(IllegalArgumentException iau) {
+			Assert.assertTrue(true);
+		}
+		
+		try {
+			new BooleanQueryParser("+AND +OR search").getQuery();			
+			Assert.fail();
+		} catch(IllegalArgumentException iau) {
+			Assert.assertTrue(true);
+		}
+	
+		try {
+			new BooleanQueryParser("+NOT +OR search").getQuery();			
+			Assert.fail();
+		} catch(IllegalArgumentException iau) {
+			Assert.assertTrue(true);
+		}
+		
 		try {
 			new BooleanQueryParser("+AND +AND search").getQuery();			
 			Assert.fail();
@@ -161,12 +275,19 @@ public class BooleanRetrievalTest {
 		}
 
 		try {
-			new BooleanQueryParser("+AND +OR search").getQuery();			
+			new BooleanQueryParser("search +NOT").getQuery();			
 			Assert.fail();
 		} catch(IllegalArgumentException iau) {
 			Assert.assertTrue(true);
 		}
 
+		try {
+			new BooleanQueryParser("search +OR").getQuery();			
+			Assert.fail();
+		} catch(IllegalArgumentException iau) {
+			Assert.assertTrue(true);
+		}
+		
 		try {
 			new BooleanQueryParser("search +AND").getQuery();			
 			Assert.fail();
@@ -231,6 +352,36 @@ public class BooleanRetrievalTest {
 		Assert.assertEquals(1, result.size() );
 	}
 
+	@Test
+	public void TermIsSuppressedByNot() {
+		Utils.SingleAttributeEntity ipod    = new Utils.SingleAttributeEntity(0,"ipod touch 16gb");
+		Utils.SingleAttributeEntity mp3    = new Utils.SingleAttributeEntity(1,"mp5 16gb");
+
+		Utils.setupSampleMemoryIndex(ipod,mp3);
+
+		BooleanQueryParser parser = new BooleanQueryParser("16gb +NOT 16gb");
+		BooleanQuery query = parser.getQuery();
+
+		BooleanSearch booleanSearch = new BooleanSearch(query, new MemoryIndexReader());
+		Set<ObjectKeyResult> result = booleanSearch.search();
+		Assert.assertEquals(0, result.size() );
+	}
+	
+	@Test
+	public void NotIsHonoredForTwoTermQuery() {
+		Utils.SingleAttributeEntity ipod    = new Utils.SingleAttributeEntity(0,"ipod touch 16gb");
+		Utils.SingleAttributeEntity mp3    = new Utils.SingleAttributeEntity(1,"mp5 16gb");
+
+		Utils.setupSampleMemoryIndex(ipod,mp3);
+
+		BooleanQueryParser parser = new BooleanQueryParser("16gb +NOT touch");
+		BooleanQuery query = parser.getQuery();
+
+		BooleanSearch booleanSearch = new BooleanSearch(query, new MemoryIndexReader());
+		Set<ObjectKeyResult> result = booleanSearch.search();
+		Assert.assertEquals(1, result.size() );
+	}
+	
 	@Test
 	public void TwoTermQueryDoesntRetrieveObjectsWithOnlyOneMatch() {
 		Utils.SingleAttributeEntity touch16gb    = new Utils.SingleAttributeEntity(0,"touch 16gb");
@@ -474,6 +625,5 @@ public class BooleanRetrievalTest {
 		result = new BooleanSearch(new BooleanQueryParser("self").getQuery(), new MemoryIndexReader()).search();
 		Assert.assertEquals(3, result.size() );			
 	}
-
 
 }
