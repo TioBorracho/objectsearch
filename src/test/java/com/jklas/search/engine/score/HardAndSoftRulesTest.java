@@ -19,6 +19,7 @@ import com.jklas.search.engine.BooleanSearch;
 import com.jklas.search.engine.VectorSearch;
 import com.jklas.search.engine.dto.ObjectResult;
 import com.jklas.search.index.memory.MemoryIndexReader;
+import com.jklas.search.index.memory.MemoryIndexReaderFactory;
 import com.jklas.search.query.bool.BooleanQueryParser;
 import com.jklas.search.query.vectorial.VectorQueryParser;
 import com.jklas.search.sort.PreSort;
@@ -47,7 +48,7 @@ public class HardAndSoftRulesTest {
 		}
 	}
 	
-	private static class HardAndSoftRule extends PreSort {
+	private static class HardAndSoftRule implements PreSort {
 
 		private class ValueHolder implements Comparable<ValueHolder> {
 			public ObjectResult okr;
@@ -118,7 +119,7 @@ public class HardAndSoftRulesTest {
 	
 		Utils.setupSampleMemoryIndex(entity1, entity2, entity3);
 		
-		BooleanSearch search = new BooleanSearch( new BooleanQueryParser("retrieved").getQuery(), new MemoryIndexReader() );
+		BooleanSearch search = new BooleanSearch( new BooleanQueryParser("retrieved").getQuery(), MemoryIndexReaderFactory.getInstance() );
 				
 		List<? extends ObjectResult> results = search.search(new HardAndSoftRule());
 		
@@ -144,7 +145,7 @@ public class HardAndSoftRulesTest {
 		Assert.assertEquals(0, results.get(2).getKey().getId());		
 	}
 
-	private static class HardAndSoftRuleInverse extends PreSort {
+	private static class HardAndSoftRuleInverse implements PreSort {
 
 		private class ValueHolder implements Comparable<ValueHolder> {
 			public ObjectResult okr;
@@ -217,7 +218,7 @@ public class HardAndSoftRulesTest {
 	
 		Utils.setupSampleMemoryIndex(entity1, entity2, entity3);
 		
-		BooleanSearch search = new BooleanSearch( new BooleanQueryParser("retrieved").getQuery(), new MemoryIndexReader() );
+		BooleanSearch search = new BooleanSearch( new BooleanQueryParser("retrieved").getQuery(), MemoryIndexReaderFactory.getInstance() );
 				
 		List<? extends ObjectResult> results = search.search(new HardAndSoftRuleInverse());
 		

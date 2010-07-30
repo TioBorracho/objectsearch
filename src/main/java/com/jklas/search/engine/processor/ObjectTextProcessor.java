@@ -7,7 +7,7 @@ import com.jklas.search.index.Term;
 
 public interface ObjectTextProcessor {
 
-	public static final Class<? extends ObjectTextProcessor> DFLT_TEXT_PROCESSOR = DefaultTextProcessor.class;
+	public static final Class<? extends ObjectTextProcessor> DFLT_TEXT_PROCESSOR = DefaultObjectTextProcessor.class;
 	
 	public static final Class<? extends ObjectTextProcessor> NULL_PROCESSOR = NullProcessor.class;
 	

@@ -17,7 +17,7 @@ import com.jklas.search.engine.VectorSearch;
 import com.jklas.search.engine.dto.ObjectKeyResult;
 import com.jklas.search.engine.dto.ObjectResult;
 import com.jklas.search.engine.dto.VectorRankedResult;
-import com.jklas.search.index.memory.MemoryIndexReader;
+import com.jklas.search.index.memory.MemoryIndexReaderFactory;
 import com.jklas.search.query.bool.BooleanQueryParser;
 import com.jklas.search.query.vectorial.VectorQueryParser;
 import com.jklas.search.sort.ReverseComparator;
@@ -54,7 +54,7 @@ public class SortTest {
 
 		Utils.setupSampleMemoryIndex(ipod230usd, ipod200usd ,ipod300usd);
 
-		BooleanSearch search = new BooleanSearch(new BooleanQueryParser("ipod touch").getQuery(), new MemoryIndexReader());
+		BooleanSearch search = new BooleanSearch(new BooleanQueryParser("ipod touch").getQuery(), MemoryIndexReaderFactory.getInstance());
 
 		Comparator<ObjectResult> priceComparator = new PriceComparator(SortEntity.class.getDeclaredField("price"));
 
@@ -73,7 +73,7 @@ public class SortTest {
 
 		Utils.setupSampleMemoryIndex(ipod230usd, ipod200usd ,ipod300usd);
 
-		BooleanSearch search = new BooleanSearch(new BooleanQueryParser("ipod touch").getQuery(), new MemoryIndexReader());
+		BooleanSearch search = new BooleanSearch(new BooleanQueryParser("ipod touch").getQuery(), MemoryIndexReaderFactory.getInstance());
 
 		Comparator<ObjectResult> priceComparator = new PriceComparator(SortEntity.class.getDeclaredField("price"));
 
@@ -121,7 +121,7 @@ public class SortTest {
 
 		Utils.setupSampleMemoryIndex(ipod_1999_230usd, ipod_2000_200usd ,ipod_1998_300usd);
 
-		BooleanSearch search = new BooleanSearch(new BooleanQueryParser("ipod touch").getQuery(), new MemoryIndexReader());
+		BooleanSearch search = new BooleanSearch(new BooleanQueryParser("ipod touch").getQuery(), MemoryIndexReaderFactory.getInstance());
 
 		Comparator<ObjectResult> yearPriceComparator =
 			new YearPriceComparator(TwoFieldsSortEntity.class.getDeclaredField("year"),
@@ -142,7 +142,7 @@ public class SortTest {
 
 		Utils.setupSampleMemoryIndex(ipod_1999_230usd, ipod_2000_200usd ,ipod_1998_300usd);
 
-		BooleanSearch search = new BooleanSearch(new BooleanQueryParser("ipod touch").getQuery(), new MemoryIndexReader());
+		BooleanSearch search = new BooleanSearch(new BooleanQueryParser("ipod touch").getQuery(), MemoryIndexReaderFactory.getInstance());
 
 		Comparator<ObjectResult> yearPriceComparator =
 			new YearPriceComparator(TwoFieldsSortEntity.class.getDeclaredField("year"),
@@ -195,7 +195,7 @@ public class SortTest {
 
 		Utils.setupSampleMemoryIndex(ipod_2000_200usd ,ipod_300usd, ipod_201usd);
 
-		BooleanSearch search = new BooleanSearch(new BooleanQueryParser("ipod touch").getQuery(), new MemoryIndexReader());
+		BooleanSearch search = new BooleanSearch(new BooleanQueryParser("ipod touch").getQuery(), MemoryIndexReaderFactory.getInstance());
 
 		Comparator<ObjectResult> yearPriceComparator =
 			new MultiClassPriceComparator(SortEntity.class.getDeclaredField("price"),
@@ -216,7 +216,7 @@ public class SortTest {
 
 		Utils.setupSampleMemoryIndex(ipod_2000_200usd ,ipod_300usd, ipod_201usd);
 
-		BooleanSearch search = new BooleanSearch(new BooleanQueryParser("ipod touch").getQuery(), new MemoryIndexReader());
+		BooleanSearch search = new BooleanSearch(new BooleanQueryParser("ipod touch").getQuery(), MemoryIndexReaderFactory.getInstance());
 
 		Comparator<ObjectResult> yearPriceComparator =
 			new MultiClassPriceComparator(SortEntity.class.getDeclaredField("price"),
@@ -237,7 +237,7 @@ public class SortTest {
 
 		Utils.setupSampleMemoryIndex(ipod_2000_200usd ,ipod_300usd, ipod_201usd);
 
-		BooleanSearch search = new BooleanSearch(new BooleanQueryParser("ipod touch").getQuery(), new MemoryIndexReader());
+		BooleanSearch search = new BooleanSearch(new BooleanQueryParser("ipod touch").getQuery(), MemoryIndexReaderFactory.getInstance());
 
 		Comparator<ObjectResult> yearPriceComparator =
 			new MultiClassPriceComparator(SortEntity.class.getDeclaredField("price"),
@@ -262,7 +262,7 @@ public class SortTest {
 
 		Utils.setupSampleMemoryIndex(ipod230usd, ipod200usd ,ipod300usd);
 
-		VectorSearch search = new VectorSearch(new VectorQueryParser("ipod touch").getQuery(), new MemoryIndexReader());
+		VectorSearch search = new VectorSearch(new VectorQueryParser("ipod touch").getQuery(), MemoryIndexReaderFactory.getInstance());
 
 		Comparator<ObjectResult> priceComparator = new PriceComparator(SortEntity.class.getDeclaredField("price"));
 
@@ -281,7 +281,7 @@ public class SortTest {
 
 		Utils.setupSampleMemoryIndex(ipod230usd, ipod200usd ,ipod300usd);
 
-		VectorSearch search = new VectorSearch(new VectorQueryParser("ipod touch").getQuery(), new MemoryIndexReader());
+		VectorSearch search = new VectorSearch(new VectorQueryParser("ipod touch").getQuery(), MemoryIndexReaderFactory.getInstance());
 
 		Comparator<ObjectResult> priceComparator = new PriceComparator(SortEntity.class.getDeclaredField("price"));
 
@@ -300,7 +300,7 @@ public class SortTest {
 
 		Utils.setupSampleMemoryIndex(ipod_1999_230usd, ipod_2000_200usd ,ipod_1998_300usd);
 
-		VectorSearch search = new VectorSearch(new VectorQueryParser("ipod touch").getQuery(), new MemoryIndexReader());
+		VectorSearch search = new VectorSearch(new VectorQueryParser("ipod touch").getQuery(), MemoryIndexReaderFactory.getInstance());
 
 		Comparator<ObjectResult> yearPriceComparator =
 			new YearPriceComparator(TwoFieldsSortEntity.class.getDeclaredField("year"),
@@ -321,7 +321,7 @@ public class SortTest {
 
 		Utils.setupSampleMemoryIndex(ipod_1999_230usd, ipod_2000_200usd ,ipod_1998_300usd);
 
-		VectorSearch search = new VectorSearch(new VectorQueryParser("ipod touch").getQuery(), new MemoryIndexReader());
+		VectorSearch search = new VectorSearch(new VectorQueryParser("ipod touch").getQuery(), MemoryIndexReaderFactory.getInstance());
 
 		Comparator<ObjectResult> yearPriceComparator =
 			new YearPriceComparator(TwoFieldsSortEntity.class.getDeclaredField("year"),
@@ -342,7 +342,7 @@ public class SortTest {
 
 		Utils.setupSampleMemoryIndex(ipod_2000_200usd ,ipod_300usd, ipod_201usd);
 
-		VectorSearch search = new VectorSearch(new VectorQueryParser("ipod touch").getQuery(), new MemoryIndexReader());
+		VectorSearch search = new VectorSearch(new VectorQueryParser("ipod touch").getQuery(), MemoryIndexReaderFactory.getInstance());
 
 		Comparator<ObjectResult> yearPriceComparator =
 			new MultiClassPriceComparator(SortEntity.class.getDeclaredField("price"),
@@ -363,7 +363,7 @@ public class SortTest {
 
 		Utils.setupSampleMemoryIndex(ipod_2000_200usd ,ipod_300usd, ipod_201usd);
 
-		BooleanSearch search = new BooleanSearch(new BooleanQueryParser("ipod touch").getQuery(), new MemoryIndexReader());
+		BooleanSearch search = new BooleanSearch(new BooleanQueryParser("ipod touch").getQuery(), MemoryIndexReaderFactory.getInstance());
 
 		Comparator<ObjectResult> yearPriceComparator =
 			new MultiClassPriceComparator(SortEntity.class.getDeclaredField("price"),
@@ -384,7 +384,7 @@ public class SortTest {
 
 		Utils.setupSampleMemoryIndex(ipod_2000_200usd ,ipod_300usd, ipod_201usd);
 
-		VectorSearch search = new VectorSearch(new VectorQueryParser("ipod touch").getQuery(), new MemoryIndexReader());
+		VectorSearch search = new VectorSearch(new VectorQueryParser("ipod touch").getQuery(), MemoryIndexReaderFactory.getInstance());
 
 		Comparator<ObjectResult> yearPriceComparator =
 			new MultiClassPriceComparator(SortEntity.class.getDeclaredField("price"),

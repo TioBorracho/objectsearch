@@ -7,7 +7,7 @@ import java.util.Stack;
 
 import com.jklas.search.engine.Language;
 import com.jklas.search.engine.dto.ObjectKeyResult;
-import com.jklas.search.engine.processor.NormalizeTokenizeProcessor;
+import com.jklas.search.engine.processor.DefaultQueryTextProcessor;
 import com.jklas.search.engine.processor.QueryTextProcessor;
 import com.jklas.search.index.Term;
 import com.jklas.search.query.operator.AndOperator;
@@ -31,7 +31,7 @@ public class BooleanQueryParser {
 	}
 	
 	public BooleanQueryParser(String originalQuery, Language language) {
-		this(originalQuery, language, new NormalizeTokenizeProcessor() ); 
+		this(originalQuery, language, new DefaultQueryTextProcessor() ); 
 	}
 
 	public BooleanQueryParser(String originalQuery, QueryTextProcessor queryTextProcessor) {

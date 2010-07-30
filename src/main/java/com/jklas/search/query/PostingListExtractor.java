@@ -12,7 +12,7 @@ import com.jklas.search.index.Term;
 
 public abstract class PostingListExtractor<E extends ObjectResult> {
 
-	public abstract E createObjectResult(Term term, Entry<ObjectKey, PostingMetadata> entry);
+	protected abstract E createObjectResult(Term term, Entry<ObjectKey, PostingMetadata> entry);
 	
 	public Set<E> extract(Term term, PostingList postingList) {
 		

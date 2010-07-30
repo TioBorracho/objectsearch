@@ -23,7 +23,7 @@ import com.jklas.search.exception.SearchEngineException;
 import com.jklas.search.exception.SearchEngineMappingException;
 import com.jklas.search.index.Term;
 import com.jklas.search.index.memory.MemoryIndex;
-import com.jklas.search.index.memory.MemoryIndexReader;
+import com.jklas.search.index.memory.MemoryIndexReaderFactory;
 import com.jklas.search.index.memory.MemoryIndexWriterFactory;
 import com.jklas.search.indexer.DefaultIndexerService;
 import com.jklas.search.indexer.pipeline.DefaultIndexingPipeline;
@@ -303,7 +303,7 @@ public class BooleanRetrievalTest {
 		BooleanQueryParser parser = new BooleanQueryParser("foo");
 		BooleanQuery query = parser.getQuery();
 
-		BooleanSearch booleanSearch = new BooleanSearch(query, new MemoryIndexReader());
+		BooleanSearch booleanSearch = new BooleanSearch(query,MemoryIndexReaderFactory.getInstance());
 		Set<ObjectKeyResult> result = booleanSearch.search();
 		Assert.assertEquals(0, result.size() );
 	}
@@ -317,7 +317,7 @@ public class BooleanRetrievalTest {
 		BooleanQueryParser parser = new BooleanQueryParser("ipod");
 		BooleanQuery query = parser.getQuery();
 
-		BooleanSearch booleanSearch = new BooleanSearch(query, new MemoryIndexReader());
+		BooleanSearch booleanSearch = new BooleanSearch(query,MemoryIndexReaderFactory.getInstance());
 		Set<ObjectKeyResult> result = booleanSearch.search();
 		Assert.assertEquals(1, result.size() );
 	}
@@ -332,7 +332,7 @@ public class BooleanRetrievalTest {
 		BooleanQueryParser parser = new BooleanQueryParser("16gb");
 		BooleanQuery query = parser.getQuery();
 
-		BooleanSearch booleanSearch = new BooleanSearch(query, new MemoryIndexReader());
+		BooleanSearch booleanSearch = new BooleanSearch(query,MemoryIndexReaderFactory.getInstance());
 		Set<ObjectKeyResult> result = booleanSearch.search();
 		Assert.assertEquals(2, result.size() );
 	}
@@ -347,7 +347,7 @@ public class BooleanRetrievalTest {
 		BooleanQueryParser parser = new BooleanQueryParser("ipod touch");
 		BooleanQuery query = parser.getQuery();
 
-		BooleanSearch booleanSearch = new BooleanSearch(query, new MemoryIndexReader());
+		BooleanSearch booleanSearch = new BooleanSearch(query,MemoryIndexReaderFactory.getInstance());
 		Set<ObjectKeyResult> result = booleanSearch.search();
 		Assert.assertEquals(1, result.size() );
 	}
@@ -362,7 +362,7 @@ public class BooleanRetrievalTest {
 		BooleanQueryParser parser = new BooleanQueryParser("16gb +NOT 16gb");
 		BooleanQuery query = parser.getQuery();
 
-		BooleanSearch booleanSearch = new BooleanSearch(query, new MemoryIndexReader());
+		BooleanSearch booleanSearch = new BooleanSearch(query,MemoryIndexReaderFactory.getInstance());
 		Set<ObjectKeyResult> result = booleanSearch.search();
 		Assert.assertEquals(0, result.size() );
 	}
@@ -377,7 +377,7 @@ public class BooleanRetrievalTest {
 		BooleanQueryParser parser = new BooleanQueryParser("16gb +NOT touch");
 		BooleanQuery query = parser.getQuery();
 
-		BooleanSearch booleanSearch = new BooleanSearch(query, new MemoryIndexReader());
+		BooleanSearch booleanSearch = new BooleanSearch(query,MemoryIndexReaderFactory.getInstance());
 		Set<ObjectKeyResult> result = booleanSearch.search();
 		Assert.assertEquals(1, result.size() );
 	}
@@ -392,7 +392,7 @@ public class BooleanRetrievalTest {
 		BooleanQueryParser parser = new BooleanQueryParser("ipod touch");
 		BooleanQuery query = parser.getQuery();
 
-		BooleanSearch booleanSearch = new BooleanSearch(query, new MemoryIndexReader());
+		BooleanSearch booleanSearch = new BooleanSearch(query,MemoryIndexReaderFactory.getInstance());
 		Set<ObjectKeyResult> result = booleanSearch.search();
 		Assert.assertEquals(0, result.size() );
 	}
@@ -407,13 +407,13 @@ public class BooleanRetrievalTest {
 		BooleanQueryParser parser = new BooleanQueryParser("ipod +AND touch");
 		BooleanQuery query = parser.getQuery();
 
-		BooleanSearch booleanSearch = new BooleanSearch(query, new MemoryIndexReader());
+		BooleanSearch booleanSearch = new BooleanSearch(query,MemoryIndexReaderFactory.getInstance());
 		Set<ObjectKeyResult> resultWithExplicitAnd = booleanSearch.search();
 
 		parser = new BooleanQueryParser("ipod touch");
 		query = parser.getQuery();
 
-		booleanSearch = new BooleanSearch(query, new MemoryIndexReader());
+		booleanSearch = new BooleanSearch(query,MemoryIndexReaderFactory.getInstance());
 		Set<ObjectKeyResult> resultWithImplicitAnd = booleanSearch.search();
 
 		Assert.assertEquals( resultWithExplicitAnd, resultWithImplicitAnd );
@@ -447,13 +447,13 @@ public class BooleanRetrievalTest {
 		BooleanQueryParser parser = new BooleanQueryParser("ipod +AND touch");
 		BooleanQuery query = parser.getQuery();
 
-		BooleanSearch booleanSearch = new BooleanSearch(query, new MemoryIndexReader());
+		BooleanSearch booleanSearch = new BooleanSearch(query,MemoryIndexReaderFactory.getInstance());
 		Set<ObjectKeyResult> resultWithExplicitAnd = booleanSearch.search();
 
 		parser = new BooleanQueryParser("ipod touch");
 		query = parser.getQuery();
 
-		booleanSearch = new BooleanSearch(query, new MemoryIndexReader());
+		booleanSearch = new BooleanSearch(query,MemoryIndexReaderFactory.getInstance());
 		Set<ObjectKeyResult> resultWithImplicitAnd = booleanSearch.search();
 
 		Assert.assertEquals( resultWithExplicitAnd, resultWithImplicitAnd );
@@ -469,7 +469,7 @@ public class BooleanRetrievalTest {
 		BooleanQueryParser parser = new BooleanQueryParser("ipod +OR touch");
 		BooleanQuery query = parser.getQuery();
 
-		BooleanSearch booleanSearch = new BooleanSearch(query, new MemoryIndexReader());
+		BooleanSearch booleanSearch = new BooleanSearch(query,MemoryIndexReaderFactory.getInstance());
 		Set<ObjectKeyResult> result = booleanSearch.search();
 
 		Assert.assertEquals( 2, result.size() );
@@ -486,7 +486,7 @@ public class BooleanRetrievalTest {
 		BooleanQueryParser parser = new BooleanQueryParser("ipod +OR touch +OR foo");
 		BooleanQuery query = parser.getQuery();
 
-		BooleanSearch booleanSearch = new BooleanSearch(query, new MemoryIndexReader());
+		BooleanSearch booleanSearch = new BooleanSearch(query,MemoryIndexReaderFactory.getInstance());
 		Set<ObjectKeyResult> result = booleanSearch.search();
 
 		Assert.assertEquals( 2, result.size() );
@@ -508,7 +508,7 @@ public class BooleanRetrievalTest {
 			query.setPage(i);
 			query.setPageSize(30);
 
-			BooleanSearch booleanSearch = new BooleanSearch(query, new MemoryIndexReader());
+			BooleanSearch booleanSearch = new BooleanSearch(query,MemoryIndexReaderFactory.getInstance());
 			Set<ObjectKeyResult> result = booleanSearch.search();
 
 			Assert.assertEquals(30, result.size() );			
@@ -531,7 +531,7 @@ public class BooleanRetrievalTest {
 			query.setPage(1);
 			query.setPageSize(30);
 
-			BooleanSearch booleanSearch = new BooleanSearch(query, new MemoryIndexReader());
+			BooleanSearch booleanSearch = new BooleanSearch(query,MemoryIndexReaderFactory.getInstance());
 			Set<ObjectKeyResult> result = booleanSearch.search();
 
 			Assert.assertEquals(30, result.size() );
@@ -543,7 +543,7 @@ public class BooleanRetrievalTest {
 			query.setPage(2);
 			query.setPageSize(30);
 
-			BooleanSearch booleanSearch = new BooleanSearch(query, new MemoryIndexReader());
+			BooleanSearch booleanSearch = new BooleanSearch(query,MemoryIndexReaderFactory.getInstance());
 			Set<ObjectKeyResult> result = booleanSearch.search();
 
 			Assert.assertEquals(20, result.size() );
@@ -555,7 +555,7 @@ public class BooleanRetrievalTest {
 			query.setPage(3);
 			query.setPageSize(30);
 
-			BooleanSearch booleanSearch = new BooleanSearch(query, new MemoryIndexReader());
+			BooleanSearch booleanSearch = new BooleanSearch(query,MemoryIndexReaderFactory.getInstance());
 			Set<ObjectKeyResult> result = booleanSearch.search();
 
 			Assert.assertEquals(0, result.size() );
@@ -580,7 +580,7 @@ public class BooleanRetrievalTest {
 
 		BooleanQueryParser parser = new BooleanQueryParser("ipod +OR apple touch", new NoAppleTextProcessor());
 		
-		BooleanSearch booleanSearch = new BooleanSearch(parser.getQuery(), new MemoryIndexReader());
+		BooleanSearch booleanSearch = new BooleanSearch(parser.getQuery(),MemoryIndexReaderFactory.getInstance());
 		Set<ObjectKeyResult> result = booleanSearch.search();
 
 		Assert.assertEquals( 1, result.size() );
@@ -616,13 +616,13 @@ public class BooleanRetrievalTest {
 		
 		Utils.setupSampleMemoryIndex(dc);
 		
-		Set<ObjectKeyResult> result = new BooleanSearch(new BooleanQueryParser("both").getQuery(), new MemoryIndexReader()).search();
+		Set<ObjectKeyResult> result = new BooleanSearch(new BooleanQueryParser("both").getQuery(),MemoryIndexReaderFactory.getInstance()).search();
 		Assert.assertEquals(4, result.size() );			
 
-		result = new BooleanSearch(new BooleanQueryParser("container").getQuery(), new MemoryIndexReader()).search();
+		result = new BooleanSearch(new BooleanQueryParser("container").getQuery(),MemoryIndexReaderFactory.getInstance()).search();
 		Assert.assertEquals(1, result.size() );			
 		
-		result = new BooleanSearch(new BooleanQueryParser("self").getQuery(), new MemoryIndexReader()).search();
+		result = new BooleanSearch(new BooleanQueryParser("self").getQuery(),MemoryIndexReaderFactory.getInstance()).search();
 		Assert.assertEquals(3, result.size() );			
 	}
 

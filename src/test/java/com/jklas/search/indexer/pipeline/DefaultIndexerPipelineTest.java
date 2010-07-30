@@ -26,7 +26,7 @@ import com.jklas.search.annotations.Stemming;
 import com.jklas.search.annotations.TextProcessor;
 import com.jklas.search.configuration.AnnotationConfigurationMapper;
 import com.jklas.search.engine.Language;
-import com.jklas.search.engine.processor.DefaultTextProcessor;
+import com.jklas.search.engine.processor.DefaultObjectTextProcessor;
 import com.jklas.search.engine.processor.NullProcessor;
 import com.jklas.search.engine.processor.OneTermTextProcessor;
 import com.jklas.search.engine.stemming.StemType;
@@ -364,7 +364,7 @@ public class DefaultIndexerPipelineTest {
 		private String attribute2 = "WORKS";
 		
 		@SearchField
-		@TextProcessor(DefaultTextProcessor.class)
+		@TextProcessor(DefaultObjectTextProcessor.class)
 		@Stemming(stemType=StemType.FULL_STEM,strategy=EnglishSnowballDummyStemStrategy.class)
 		private String attribute3 = "WORKS";
 		

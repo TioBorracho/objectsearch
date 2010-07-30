@@ -18,6 +18,7 @@ import com.jklas.search.engine.VectorSearch;
 import com.jklas.search.engine.dto.ObjectKeyResult;
 import com.jklas.search.engine.dto.VectorRankedResult;
 import com.jklas.search.index.memory.MemoryIndexReader;
+import com.jklas.search.index.memory.MemoryIndexReaderFactory;
 import com.jklas.search.query.bool.BooleanQuery;
 import com.jklas.search.query.bool.BooleanQueryParser;
 import com.jklas.search.query.vectorial.VectorQuery;
@@ -86,7 +87,7 @@ public class FilterTest {
 
 		BooleanQueryParser parser = new BooleanQueryParser("julian +OR karl");
 		BooleanQuery query = parser.getQuery();
-		BooleanSearch booleanSearch = new BooleanSearch(query, new MemoryIndexReader());		
+		BooleanSearch booleanSearch = new BooleanSearch(query, MemoryIndexReaderFactory.getInstance());		
 		Set<ObjectKeyResult> results = booleanSearch.search();
 
 		Assert.assertEquals(2, results.size() );
@@ -173,7 +174,7 @@ public class FilterTest {
 		
 		BooleanQueryParser parser = new BooleanQueryParser("julian +OR karl");
 		BooleanQuery query = parser.getQuery();
-		BooleanSearch booleanSearch = new BooleanSearch(query, new MemoryIndexReader());
+		BooleanSearch booleanSearch = new BooleanSearch(query, MemoryIndexReaderFactory.getInstance());
 		FilterChain filterChain = new FilterChain(dateOfBirthFilter);
 		Set<ObjectKeyResult> results = booleanSearch.search(filterChain);
 

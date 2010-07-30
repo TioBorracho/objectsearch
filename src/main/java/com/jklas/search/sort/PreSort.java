@@ -5,8 +5,8 @@ import java.util.List;
 
 import com.jklas.search.engine.dto.ObjectResult;
 
-public abstract class PreSort {
+public interface PreSort {
 
-	public abstract List<? extends ObjectResult> work(Collection<? extends ObjectResult> currentObjects);
+	public List<? extends ObjectResult> work(Collection<? extends ObjectResult> currentObjects);
 	
 }

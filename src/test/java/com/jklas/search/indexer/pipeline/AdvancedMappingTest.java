@@ -25,7 +25,7 @@ import com.jklas.search.annotations.TextProcessor;
 import com.jklas.search.configuration.AnnotationConfigurationMapper;
 import com.jklas.search.configuration.MappedFieldDescriptor;
 import com.jklas.search.configuration.SearchMapping;
-import com.jklas.search.engine.processor.DefaultTextProcessor;
+import com.jklas.search.engine.processor.DefaultObjectTextProcessor;
 import com.jklas.search.engine.processor.NullProcessor;
 import com.jklas.search.engine.processor.OneTermTextProcessor;
 import com.jklas.search.exception.SearchEngineException;
@@ -129,7 +129,7 @@ public class AdvancedMappingTest {
 	
 	@SuppressWarnings("unused")
 	
-	@Indexable(makeSubclassesIndexable=true, indexName="GRAND") @TextProcessor(DefaultTextProcessor.class)
+	@Indexable(makeSubclassesIndexable=true, indexName="GRAND") @TextProcessor(DefaultObjectTextProcessor.class)
 	private class Grandfather extends GrandGrandfather {
 		@SearchId int id = 0;
 		@SearchField public String g = "From grandfather";

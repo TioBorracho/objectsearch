@@ -14,7 +14,7 @@ import com.jklas.search.annotations.SearchFilter;
 import com.jklas.search.annotations.SearchId;
 import com.jklas.search.engine.BooleanSearch;
 import com.jklas.search.engine.dto.ObjectKeyResult;
-import com.jklas.search.index.memory.MemoryIndexReader;
+import com.jklas.search.index.memory.MemoryIndexReaderFactory;
 import com.jklas.search.query.bool.BooleanQuery;
 import com.jklas.search.query.bool.BooleanQueryParser;
 import com.jklas.search.util.Utils;
@@ -63,7 +63,7 @@ public class DateRangeFilterTest {
 
 		BooleanQueryParser parser = new BooleanQueryParser("julian +OR juan");
 		BooleanQuery query = parser.getQuery();
-		BooleanSearch booleanSearch = new BooleanSearch(query, new MemoryIndexReader());		
+		BooleanSearch booleanSearch = new BooleanSearch(query, MemoryIndexReaderFactory.getInstance());		
 		Set<ObjectKeyResult> results = booleanSearch.search();
 
 		Assert.assertEquals(2, results.size() );

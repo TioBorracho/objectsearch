@@ -9,6 +9,7 @@ import java.util.Set;
 import com.jklas.search.engine.dto.ObjectKeyResult;
 import com.jklas.search.engine.dto.ObjectResult;
 import com.jklas.search.engine.filter.FilterChain;
+import com.jklas.search.index.IndexReaderFactory;
 import com.jklas.search.index.MasterAndInvertedIndexReader;
 import com.jklas.search.query.bool.BooleanQuery;
 import com.jklas.search.query.operator.Operator;
@@ -47,10 +48,10 @@ public class BooleanSearch {
 	 * @param booleanQuery the query that will be executed
 	 * @param reader an object that will read posting lists from memory, disk, database, etc
 	 */
-	public BooleanSearch(BooleanQuery booleanQuery, MasterAndInvertedIndexReader reader) {
-		checkParameters(booleanQuery,reader);
+	public BooleanSearch(BooleanQuery booleanQuery, IndexReaderFactory factory) {
+		this.reader = factory.getIndexReader();
 		this.query = booleanQuery;
-		this.reader = reader;
+		checkParameters(booleanQuery,reader);
 	}
 
 	/**
@@ -63,7 +64,7 @@ public class BooleanSearch {
 	public Set<ObjectKeyResult> retrieve() {
 		Operator<ObjectKeyResult> rootOperator = query.getRootOperator();
 		try {
-			reader.open();
+			reader.open( query.getSelectedIndex() );
 			Set<ObjectKeyResult> booleanQueryResults = rootOperator.work(reader);			
 			return booleanQueryResults;
 		} finally {

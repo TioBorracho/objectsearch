@@ -1,13 +1,12 @@
 package com.jklas.search.index.memory;
 
 import com.jklas.search.index.IndexId;
-import com.jklas.search.index.IndexWriter;
+import com.jklas.search.index.MasterAndInvertedIndexWriter;
 import com.jklas.search.index.ObjectKey;
 import com.jklas.search.index.PostingMetadata;
 import com.jklas.search.index.Term;
-import com.jklas.search.index.dto.IndexObjectDto;
 
-public class MemoryIndexWriter implements IndexWriter {
+public class MemoryIndexWriter implements MasterAndInvertedIndexWriter {
 
 	private IndexWriterState state = new NewWriterState();
 
@@ -34,11 +33,10 @@ public class MemoryIndexWriter implements IndexWriter {
 	}
 
 	@Override
-	public void openDeleteAndClose(IndexObjectDto indexObjectDto) {
-		state.handleOpen(this, indexObjectDto.getIndexId());
+	public void openDeleteAndClose(IndexId indexId, ObjectKey objectKey) {
+		state.handleOpen(this, indexId);
 		try {
-			ObjectKey oik = new ObjectKey(indexObjectDto.getEntity().getClass(), indexObjectDto.getId());
-			state.handleDelete(this, oik);
+			state.handleDelete(this, objectKey);
 		} finally {
 			state.handleClose(this);
 		}		
@@ -151,8 +149,7 @@ public class MemoryIndexWriter implements IndexWriter {
 	}
 
 	@Override
-	public void delete(IndexObjectDto indexObjectDto) {
-		ObjectKey oik = new ObjectKey(indexObjectDto.getEntity().getClass(), indexObjectDto.getId());
-		state.handleDelete(this, oik);
+	public void delete(ObjectKey objectKey) {
+		state.handleDelete(this, objectKey);
 	}
 }

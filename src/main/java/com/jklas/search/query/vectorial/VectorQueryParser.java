@@ -8,7 +8,7 @@ import java.util.Map;
 
 import com.jklas.search.engine.Language;
 import com.jklas.search.engine.dto.SingleTermObjectResult;
-import com.jklas.search.engine.processor.NormalizeTokenizeProcessor;
+import com.jklas.search.engine.processor.DefaultQueryTextProcessor;
 import com.jklas.search.engine.processor.QueryTextProcessor;
 import com.jklas.search.index.IndexId;
 import com.jklas.search.index.Term;
@@ -25,7 +25,7 @@ public class VectorQueryParser {
 	}
 	
 	public VectorQueryParser(String originalQuery, Language language) {
-		this(originalQuery, language, new NormalizeTokenizeProcessor() ); 
+		this(originalQuery, language, new DefaultQueryTextProcessor() ); 
 	}
 
 	public VectorQueryParser(String originalQuery, QueryTextProcessor queryTextProcessor) {

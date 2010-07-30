@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.jklas.search.engine.processor.DefaultTextProcessor;
+import com.jklas.search.engine.processor.DefaultObjectTextProcessor;
 import com.jklas.search.engine.processor.ObjectTextProcessor;
 
 @Retention(RetentionPolicy.RUNTIME)
@@ -19,5 +19,5 @@ public @interface TextProcessor {
 	 * @return a class that will be used for text processing
 	 * of the fields of this type
 	 */
-	Class<? extends ObjectTextProcessor> value() default DefaultTextProcessor.class;
+	Class<? extends ObjectTextProcessor> value() default DefaultObjectTextProcessor.class;
 }

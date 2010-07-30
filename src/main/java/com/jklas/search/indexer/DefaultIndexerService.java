@@ -12,8 +12,9 @@ import com.jklas.search.configuration.SearchConfiguration;
 import com.jklas.search.configuration.SearchMapping;
 import com.jklas.search.exception.IndexObjectException;
 import com.jklas.search.exception.SearchEngineException;
+import com.jklas.search.exception.SearchEngineMappingException;
 import com.jklas.search.index.IndexId;
-import com.jklas.search.index.IndexWriter;
+import com.jklas.search.index.MasterAndInvertedIndexWriter;
 import com.jklas.search.index.IndexWriterFactory;
 import com.jklas.search.index.ObjectKey;
 import com.jklas.search.index.PostingMetadata;
@@ -28,7 +29,7 @@ public class DefaultIndexerService implements IndexerService {
 	private IndexingPipeline indexingPipeline;
 
 	private final IndexWriterFactory writerFactory;
-		
+
 	public DefaultIndexerService(IndexingPipeline indexingPipeline, IndexWriterFactory factory) {
 		setIndexingPipeline(indexingPipeline);
 		this.writerFactory = factory;
@@ -50,22 +51,23 @@ public class DefaultIndexerService implements IndexerService {
 
 	@Override
 	public void delete(Object entity) throws IndexObjectException {
-		
+
 		SearchConfiguration configuration = SearchEngine.getInstance().getConfiguration();
-		
+
 		Class<?> clazz = entity.getClass();
-		
+
 		if(!configuration.isMapped(clazz)) throw new IndexObjectException("Can't delete object since class "+clazz+" isn't mapped");
-				
+
 		SearchMapping mapping = configuration.getMapping(entity.getClass());
 
 		try {
+			Serializable id = (Serializable)mapping.extractId(entity);
 			IndexId indexId = mapping.getIndexSelector().selectIndex(entity);
-			IndexObjectDto indexObjectDto = new IndexObjectDto(entity);
-			indexObjectDto.setIndexId(indexId);
-			writerFactory.getIndexWriter().openDeleteAndClose(indexObjectDto);
+			writerFactory.getIndexWriter().openDeleteAndClose(indexId, new ObjectKey(entity.getClass(), id));
 		} catch (SearchEngineException e) {
-			throw new IndexObjectException("Couldn't get the index id for entity: "+entity,e);
+			throw new RuntimeException("Couldn't get object id or index id",e);
+		} catch (SearchEngineMappingException e) {
+			throw new RuntimeException("Couldn't get object id",e);
 		}
 	}
 
@@ -109,7 +111,7 @@ public class DefaultIndexerService implements IndexerService {
 
 	@Override
 	public void bulkCreate(List<?> entities) throws IndexObjectException {
-		HashMap<IndexId, IndexWriter> openWriters = new HashMap<IndexId, IndexWriter>();
+		HashMap<IndexId, MasterAndInvertedIndexWriter> openWriters = new HashMap<IndexId, MasterAndInvertedIndexWriter>();
 		try {
 			for (Object entity : entities) {
 				if(entity == null) throw new IndexObjectException("Can't index null entities");
@@ -120,7 +122,7 @@ public class DefaultIndexerService implements IndexerService {
 					IndexObjectDto current = semiIndexEntry.getKey();
 
 					IndexId currentIndexId = current.getIndexId();
-					IndexWriter writer ;
+					MasterAndInvertedIndexWriter writer ;
 					if(openWriters.containsKey(currentIndexId)) writer = openWriters.get(currentIndexId);
 					else {
 						writer = writerFactory.getIndexWriter();
@@ -141,7 +143,7 @@ public class DefaultIndexerService implements IndexerService {
 				}
 			}
 		} finally {
-			for (IndexWriter writer : openWriters.values()) {
+			for (MasterAndInvertedIndexWriter writer : openWriters.values()) {
 				writer.close();
 			}
 		}
@@ -155,12 +157,12 @@ public class DefaultIndexerService implements IndexerService {
 
 	@Override
 	public void bulkDelete(List<?> entities) throws IndexObjectException {
-		IndexWriter indexWriter = writerFactory.getIndexWriter();
+		MasterAndInvertedIndexWriter indexWriter = writerFactory.getIndexWriter();
 
 		try {
 			for (Object entity: entities) {	
 				IndexObjectDto indexObjectDto = new IndexObjectDto(entity);
-				indexWriter.delete(indexObjectDto);
+				indexWriter.delete(new ObjectKey(indexObjectDto.getClass(), indexObjectDto.getId()));
 			}
 		} finally {
 			indexWriter.close();
@@ -170,7 +172,7 @@ public class DefaultIndexerService implements IndexerService {
 	@Override
 	public void bulkDtoCreate(List<IndexObjectDto> indexObjectDto) throws IndexObjectException {
 		List<Object> entities = SearchLibrary.convertDtoListToEntityList(indexObjectDto);
-		
+
 		bulkCreate(entities);
 	}
 
@@ -186,7 +188,7 @@ public class DefaultIndexerService implements IndexerService {
 		bulkDelete(entities);
 	}
 
-	
+
 
 	@Override
 	public void bulkDtoUpdate(List<IndexObjectDto> indexObjectDto) throws IndexObjectException {

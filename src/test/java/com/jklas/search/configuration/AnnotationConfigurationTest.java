@@ -18,7 +18,7 @@ import com.jklas.search.annotations.SearchSort;
 import com.jklas.search.annotations.Stemming;
 import com.jklas.search.annotations.TextProcessor;
 import com.jklas.search.engine.Language;
-import com.jklas.search.engine.processor.DefaultTextProcessor;
+import com.jklas.search.engine.processor.DefaultObjectTextProcessor;
 import com.jklas.search.engine.processor.OneTermTextProcessor;
 import com.jklas.search.engine.stemming.IdentityStemmerStrategy;
 import com.jklas.search.engine.stemming.StemType;
@@ -394,7 +394,7 @@ public class AnnotationConfigurationTest {
 		private String attribute1;
 		
 		@SearchField
-		@TextProcessor(DefaultTextProcessor.class)
+		@TextProcessor(DefaultObjectTextProcessor.class)
 		private String attribute2;
 		
 		@SearchFilter
@@ -424,7 +424,7 @@ public class AnnotationConfigurationTest {
 		
 		Assert.assertEquals(OneTermTextProcessor.class, currentConfiguration.getMapping(dummy).getFieldDescriptor(attribute1).getTextProcessor().getClass());
 		
-		Assert.assertEquals(DefaultTextProcessor.class, currentConfiguration.getMapping(dummy).getFieldDescriptor(attribute2).getTextProcessor().getClass());
+		Assert.assertEquals(DefaultObjectTextProcessor.class, currentConfiguration.getMapping(dummy).getFieldDescriptor(attribute2).getTextProcessor().getClass());
 	}
 	
 }
