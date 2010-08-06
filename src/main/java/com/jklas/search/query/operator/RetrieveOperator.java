@@ -29,10 +29,10 @@ public class RetrieveOperator<E extends ObjectResult> extends Operator<E> {
 		
 		RetrieveOperator<?> o = (RetrieveOperator<?>)other;
 		
-		return term.equals(o.getTerm());
+		return term.equals(o.getOperatorTerm());
 	}
 
-	public Term getTerm() {
+	public Term getOperatorTerm() {
 		return term;
 	}
 	
@@ -48,8 +48,8 @@ public class RetrieveOperator<E extends ObjectResult> extends Operator<E> {
 
 	@Override
 	public Set<E> work(MasterAndInvertedIndexReader reader) {		
-		PostingList postingList = reader.read(getTerm());
+		PostingList postingList = reader.read(getOperatorTerm());
 		
-		return extractor.extract(getTerm(),postingList);
+		return extractor.extract(getOperatorTerm(),postingList);
 	}
 }

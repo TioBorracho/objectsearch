@@ -1,7 +1,6 @@
 package com.jklas.search.query.operator;
 
 import com.jklas.search.engine.dto.ObjectResult;
-import com.jklas.search.index.Term;
 
 
 
@@ -44,8 +43,6 @@ public abstract class BinaryOperator<E extends ObjectResult> extends Operator<E>
 		
 		return leftOperator.equals(other.leftOperator) && rightOperator.equals(other.rightOperator);
 	}
-	
-	public abstract Term getOperatorTerm();
 	
 	@Override
 	public String toString() {	
