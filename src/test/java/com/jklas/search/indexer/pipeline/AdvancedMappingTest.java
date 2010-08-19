@@ -17,6 +17,7 @@ import com.jklas.search.annotations.Indexable;
 import com.jklas.search.annotations.IndexableContainer;
 import com.jklas.search.annotations.LangId;
 import com.jklas.search.annotations.LangSelector;
+import com.jklas.search.annotations.NotIndexable;
 import com.jklas.search.annotations.SearchCollection;
 import com.jklas.search.annotations.SearchContained;
 import com.jklas.search.annotations.SearchField;
@@ -358,4 +359,54 @@ public class AdvancedMappingTest {
 		
 		Assert.assertTrue(mapping.isIndexable());		
 	}
+	
+	@SuppressWarnings("unused") @Indexable(makeSubclassesIndexable = true)
+	private class OtherSuperWithCascade {
+		@SearchId public int id;
+	}
+	
+	@SuppressWarnings("unused")
+	@NotIndexable
+	private class ChildNotIndexable extends OtherSuperWithCascade {
+	}
+
+	@Test
+	public void ChildIsNotIndexableButParentIs() throws SearchEngineMappingException, SearchEngineException, IllegalArgumentException, IllegalAccessException {
+
+		AnnotationConfigurationMapper.configureAndMap( new OtherSuperWithCascade() );
+		AnnotationConfigurationMapper.configureAndMap( new ChildNotIndexable() );
+		
+		SearchMapping mapping = SearchEngine.getInstance().getConfiguration().getMapping( ChildNotIndexable.class );
+		Assert.assertNotNull(mapping);
+		Assert.assertFalse(mapping.isIndexable());		
+		
+		mapping = SearchEngine.getInstance().getConfiguration().getMapping( OtherSuperWithCascade.class );
+		Assert.assertNotNull(mapping);
+		Assert.assertTrue(mapping.isIndexable());
+	}
+
+	@SuppressWarnings("unused")
+	private class IndexableLeaf extends OtherSuperWithCascade {
+	}
+	
+	@Test
+	public void ChildIsNotIndexableButParentAndBrotherAreIndexable() throws SearchEngineMappingException, SearchEngineException, IllegalArgumentException, IllegalAccessException {
+
+		AnnotationConfigurationMapper.configureAndMap( new OtherSuperWithCascade() );
+		AnnotationConfigurationMapper.configureAndMap( new ChildNotIndexable() );
+		AnnotationConfigurationMapper.configureAndMap( new IndexableLeaf() );
+		
+		SearchMapping mapping = SearchEngine.getInstance().getConfiguration().getMapping( ChildNotIndexable.class );
+		Assert.assertNotNull(mapping);
+		Assert.assertFalse(mapping.isIndexable());		
+		
+		mapping = SearchEngine.getInstance().getConfiguration().getMapping( OtherSuperWithCascade.class );
+		Assert.assertNotNull(mapping);
+		Assert.assertTrue(mapping.isIndexable());
+		
+		mapping = SearchEngine.getInstance().getConfiguration().getMapping( IndexableLeaf.class );
+		Assert.assertNotNull(mapping);
+		Assert.assertTrue(mapping.isIndexable());
+	}
+
 }

@@ -14,7 +14,7 @@ public interface MasterIndex {
 	 * This implies that the inverted index isn't updated as you
 	 * would expect.
 	 * 
-	 * Uste at your own risk.
+	 * Use at your own risk.
 	 * 
 	 * @param key the key to be evicted from the master registry
 	 */

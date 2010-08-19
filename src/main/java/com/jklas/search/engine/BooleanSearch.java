@@ -9,6 +9,7 @@ import java.util.Set;
 import com.jklas.search.engine.dto.ObjectKeyResult;
 import com.jklas.search.engine.dto.ObjectResult;
 import com.jklas.search.engine.filter.FilterChain;
+import com.jklas.search.engine.filter.ImmediateRemoveFilterChain;
 import com.jklas.search.index.IndexReaderFactory;
 import com.jklas.search.index.MasterAndInvertedIndexReader;
 import com.jklas.search.query.bool.BooleanQuery;

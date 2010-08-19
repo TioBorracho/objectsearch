@@ -175,12 +175,39 @@ public class FilterTest {
 		BooleanQueryParser parser = new BooleanQueryParser("julian +OR karl");
 		BooleanQuery query = parser.getQuery();
 		BooleanSearch booleanSearch = new BooleanSearch(query, MemoryIndexReaderFactory.getInstance());
-		FilterChain filterChain = new FilterChain(dateOfBirthFilter);
+		FilterChain filterChain = new ImmediateRemoveFilterChain(dateOfBirthFilter);
 		Set<ObjectKeyResult> results = booleanSearch.search(filterChain);
 
 		Assert.assertEquals(1, results.size() );
 	}
 
+	@Test
+	public void LateFilterInsideBooleanSearch() throws SecurityException, NoSuchFieldException {
+		Date fakeDate = new Date();
+
+		EntityWithGetAccess1983 dummy1983   = new EntityWithGetAccess1983();
+		dummy1983.id = 0;
+		dummy1983.attribute = "julian";
+		dummy1983.dateOfBirth = fakeDate;
+
+		EntityWithGetAccess2983 dummy2983   = new EntityWithGetAccess2983();
+		dummy2983.id = 1;
+		dummy2983.attribute = "karl";
+		dummy2983.dateOfBirth = fakeDate;
+
+		Utils.setupSampleMemoryIndex(dummy1983,dummy2983);
+
+		DateRangeFilter dateOfBirthFilter = setupDateRangeFilter(1983,3,30,1990,1,1);	
+		
+		BooleanQueryParser parser = new BooleanQueryParser("julian +OR karl");
+		BooleanQuery query = parser.getQuery();
+		BooleanSearch booleanSearch = new BooleanSearch(query, MemoryIndexReaderFactory.getInstance());
+		FilterChain filterChain = new LateRemoveFilterChain(dateOfBirthFilter);
+		Set<ObjectKeyResult> results = booleanSearch.search(filterChain);
+
+		Assert.assertEquals(1, results.size() );
+	}
+	
 	@Test
 	public void FilterInsideVectorSearch() throws SecurityException, NoSuchFieldException {
 
@@ -202,12 +229,39 @@ public class FilterTest {
 		
 		VectorQueryParser parser = new VectorQueryParser("julian karl");
 		VectorQuery query = parser.getQuery();
-		FilterChain filterChain = new FilterChain(dateOfBirthFilter);
+		FilterChain filterChain = new ImmediateRemoveFilterChain(dateOfBirthFilter);
 		List<VectorRankedResult> results = new VectorSearch(query, new MemoryIndexReader()).search(filterChain);
 
 		Assert.assertEquals(1, results.size() );
 	}
 
+	@Test
+	public void LateInsideVectorSearch() throws SecurityException, NoSuchFieldException {
+
+		Date fakeDate = new Date();
+
+		EntityWithGetAccess1983 dummy1983   = new EntityWithGetAccess1983();
+		dummy1983.id = 0;
+		dummy1983.attribute = "julian";
+		dummy1983.dateOfBirth = fakeDate;
+
+		EntityWithGetAccess2983 dummy2983   = new EntityWithGetAccess2983();
+		dummy2983.id = 1;
+		dummy2983.attribute = "karl";
+		dummy2983.dateOfBirth = fakeDate;
+
+		DateRangeFilter dateOfBirthFilter = setupDateRangeFilter(1983,3,30,1990,1,1);
+		
+		Utils.setupSampleMemoryIndex(dummy1983,dummy2983);
+		
+		VectorQueryParser parser = new VectorQueryParser("julian karl");
+		VectorQuery query = parser.getQuery();
+		FilterChain filterChain = new LateRemoveFilterChain(dateOfBirthFilter);
+		List<VectorRankedResult> results = new VectorSearch(query, new MemoryIndexReader()).search(filterChain);
+
+		Assert.assertEquals(1, results.size() );
+	}
+	
 	private DateRangeFilter setupDateRangeFilter(int startY, int startM, int startD, int endY, int endM, int endD) throws NoSuchFieldException {
 		Calendar start = Calendar.getInstance(), end = Calendar.getInstance();
 		start.set(Calendar.YEAR,startY);start.set(Calendar.MONTH,startM);start.set(Calendar.DAY_OF_MONTH,startD);

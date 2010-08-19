@@ -13,6 +13,7 @@ import com.jklas.search.annotations.Indexable;
 import com.jklas.search.annotations.IndexableContainer;
 import com.jklas.search.annotations.LangId;
 import com.jklas.search.annotations.LangSelector;
+import com.jklas.search.annotations.NotIndexable;
 import com.jklas.search.annotations.SearchCollection;
 import com.jklas.search.annotations.SearchContained;
 import com.jklas.search.annotations.SearchField;
@@ -143,6 +144,14 @@ public class AnnotationConfigurationMapper {
 
 		Class<?> superClassForCascading = null, climbTarget = null;
 
+		// if the class is explicitly not indexable, we don't
+		// have much here to do...mapClass(superClassForCascading,mapping)
+		if(isExplicitNotIndexable(clazz)) {
+			SearchMapping mapping = configuration.addEmptyMapping(clazz);
+			mapping.setIndexable(false);
+			return true;
+		}
+		
 		// if the class is not indexable itself, it may still be indexable
 		// by inheritance or might be an IndexableContainer
 		if(!isIndexable(clazz)) {
@@ -184,6 +193,10 @@ public class AnnotationConfigurationMapper {
 		return true;
 	}
 
+
+	private boolean isExplicitNotIndexable(Class<?> clazz) {
+		return clazz.getAnnotation(NotIndexable.class)!=null;
+	}
 
 	private void mapPureContainerClass(Class<?> clazz, SearchMapping mapping) {
 		mapping.setIndexable(false);

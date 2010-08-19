@@ -27,8 +27,8 @@ import com.jklas.search.util.Utils;
 
 public class HardAndSoftRulesTest {
 
-	@Indexable
-	public static class HardAndSoftRuleEntity {
+	@Indexable	
+	public class HardAndSoftRuleEntity {
 		@SearchId public final int id;
 		
 		@SearchSort public final int proxy1;
@@ -48,7 +48,7 @@ public class HardAndSoftRulesTest {
 		}
 	}
 	
-	private static class HardAndSoftRule implements PreSort {
+	private class HardAndSoftRule implements PreSort {
 
 		private class ValueHolder implements Comparable<ValueHolder> {
 			public ObjectResult okr;
@@ -145,7 +145,7 @@ public class HardAndSoftRulesTest {
 		Assert.assertEquals(0, results.get(2).getKey().getId());		
 	}
 
-	private static class HardAndSoftRuleInverse implements PreSort {
+	private class HardAndSoftRuleInverse implements PreSort {
 
 		private class ValueHolder implements Comparable<ValueHolder> {
 			public ObjectResult okr;

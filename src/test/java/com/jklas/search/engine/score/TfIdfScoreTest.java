@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import com.jklas.search.engine.VectorSearch;
 import com.jklas.search.engine.dto.VectorRankedResult;
-import com.jklas.search.engine.score.VectorRanker;
+import com.jklas.search.engine.score.DefaultVectorRanker;
 import com.jklas.search.index.MasterAndInvertedIndexReader;
 import com.jklas.search.index.Term;
 import com.jklas.search.index.memory.MemoryIndexReader;
@@ -78,7 +78,7 @@ public class TfIdfScoreTest {
 		VectorQuery vectorQuery = new VectorQueryParser("Pedro Klas").getQuery();
 		VectorSearch vectorSearch = new VectorSearch(vectorQuery, new MemoryIndexReader());
 
-		List<VectorRankedResult> result = vectorSearch.search(new VectorRanker());
+		List<VectorRankedResult> result = vectorSearch.search(new DefaultVectorRanker());
 
 		// orden
 		Assert.assertEquals(2,result.get(0).getKey().getId());
@@ -110,7 +110,7 @@ public class TfIdfScoreTest {
 		VectorQuery vectorQuery = new VectorQueryParser("first second third entity").getQuery();
 		VectorSearch vectorSearch = new VectorSearch(vectorQuery, new MemoryIndexReader());
 
-		List<VectorRankedResult> result = vectorSearch.search(new VectorRanker());
+		List<VectorRankedResult> result = vectorSearch.search(new DefaultVectorRanker());
 
 		for (VectorRankedResult vectorResult : result) {
 			if((Integer)vectorResult.getKey().getId() == 0)
