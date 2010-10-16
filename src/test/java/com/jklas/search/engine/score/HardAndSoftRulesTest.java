@@ -16,6 +16,7 @@ import com.jklas.search.annotations.SearchField;
 import com.jklas.search.annotations.SearchId;
 import com.jklas.search.annotations.SearchSort;
 import com.jklas.search.engine.BooleanSearch;
+import com.jklas.search.engine.Search;
 import com.jklas.search.engine.VectorSearch;
 import com.jklas.search.engine.dto.ObjectResult;
 import com.jklas.search.index.memory.MemoryIndexReader;
@@ -136,9 +137,9 @@ public class HardAndSoftRulesTest {
 	
 		Utils.setupSampleMemoryIndex(entity1, entity2, entity3);
 		
-		VectorSearch search = new VectorSearch( new VectorQueryParser("retrieved").getQuery(), new MemoryIndexReader() );
+		Search search = new VectorSearch( new VectorQueryParser("retrieved").getQuery(), new MemoryIndexReader() );
 				
-		List<? extends ObjectResult> results = search.search(new HardAndSoftRule());
+		List<? extends ObjectResult> results = (List<? extends ObjectResult>) search.search(new HardAndSoftRule());
 		
 		Assert.assertEquals(2, results.get(0).getKey().getId());
 		Assert.assertEquals(1, results.get(1).getKey().getId());
@@ -235,9 +236,9 @@ public class HardAndSoftRulesTest {
 	
 		Utils.setupSampleMemoryIndex(entity1, entity2, entity3);
 		
-		VectorSearch search = new VectorSearch( new VectorQueryParser("retrieved").getQuery(), new MemoryIndexReader() );
+		Search search = new VectorSearch( new VectorQueryParser("retrieved").getQuery(), new MemoryIndexReader() );
 				
-		List<? extends ObjectResult> results = search.search(new HardAndSoftRuleInverse());
+		List<? extends ObjectResult> results = (List<? extends ObjectResult>) search.search(new HardAndSoftRuleInverse());
 		
 		Assert.assertEquals(0, results.get(0).getKey().getId());
 		Assert.assertEquals(1, results.get(1).getKey().getId());

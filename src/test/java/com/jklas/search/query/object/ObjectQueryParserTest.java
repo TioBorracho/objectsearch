@@ -75,7 +75,7 @@ public class ObjectQueryParserTest {
 		shakespeare.idx = "Books";
 
 		VectorObjectQueryParser parser = new VectorObjectQueryParser(shakespeare);		
-		VectorSearch search = new VectorSearch(parser.getQuery(), MemoryIndexReaderFactory.getInstance() ); 
+		VectorSearch  search = new VectorSearch(parser.getQuery(), MemoryIndexReaderFactory.getInstance() ); 
 		List<VectorRankedResult> result = search.search();
 		Assert.assertEquals(2, result.size() );
 		

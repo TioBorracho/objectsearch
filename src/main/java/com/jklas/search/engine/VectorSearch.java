@@ -19,7 +19,7 @@ import com.jklas.search.query.operator.Operator;
 import com.jklas.search.query.vectorial.VectorQuery;
 import com.jklas.search.sort.PreSort;
 
-public class VectorSearch {
+public class VectorSearch implements Search {
 
 	private final VectorQuery query;
 
@@ -47,6 +47,10 @@ public class VectorSearch {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see com.jklas.search.engine.Search#search()
+	 */
+	@Override
 	public List<VectorRankedResult> search() {
 		try {
 			return ResultWindow.windowVectorList( retrieveAndCompactToVectorResult() , query);			
@@ -63,6 +67,10 @@ public class VectorSearch {
 		}
 	}	
 
+	/* (non-Javadoc)
+	 * @see com.jklas.search.engine.Search#search(com.jklas.search.engine.filter.FilterChain)
+	 */
+	@Override
 	public List<VectorRankedResult> search(FilterChain filterChain) {
 		try {
 			List<VectorRankedResult> results = search();		
@@ -74,7 +82,11 @@ public class VectorSearch {
 		}
 	}
 
-	public List<VectorRankedResult> search( Comparator<? super VectorRankedResult> comparator ) {
+	/* (non-Javadoc)
+	 * @see com.jklas.search.engine.Search#search(java.util.Comparator)
+	 */
+	@Override
+	public List<VectorRankedResult> search(Comparator<? super ObjectResult> comparator) {
 		try {
 			ArrayList<VectorRankedResult> results = retrieveAndCompactToVectorResult();		
 			Collections.sort(results, comparator);
@@ -84,8 +96,12 @@ public class VectorSearch {
 			if(reader.isOpen()) reader.close();
 		}
 	}
-
-	public List<? extends ObjectResult> search(PreSort rule) {
+	
+	/* (non-Javadoc)
+	 * @see com.jklas.search.engine.Search#search(com.jklas.search.sort.PreSort)
+	 */
+	@Override
+	public List<VectorRankedResult> search(PreSort rule) {
 		try {			
 			return ResultWindow.windowVectorList( rule.work(search()) , query);					
 		} finally {

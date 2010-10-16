@@ -32,6 +32,8 @@ public class DefaultVectorRanker implements VectorRanker {
 		HashMap<Term,Integer> df = new HashMap<Term,Integer>(vectorQuery.getExtractor().getDocumentFrequency());
 
 		Map<ObjectKey,VectorRankedResult> rankedResultMap = new HashMap<ObjectKey,VectorRankedResult>();
+		
+		int indexedObjectCount = reader.getIndexedObjectCount();
 
 		for (SingleTermObjectResult singleTermMatch : unsortedResults) {
 
@@ -45,7 +47,7 @@ public class DefaultVectorRanker implements VectorRanker {
 			} 			
 
 			objectResult.addScore(
-					getScore( singleTermMatch , df.get( singleTermMatch.getTerm() ) , reader.getIndexedObjectCount() )
+					getScore( singleTermMatch , df.get( singleTermMatch.getTerm() ) , indexedObjectCount )
 			);
 		}
 

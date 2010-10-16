@@ -7,9 +7,9 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.jklas.search.annotations.IndexReference;
 import com.jklas.search.annotations.Indexable;
 import com.jklas.search.annotations.IndexableContainer;
-import com.jklas.search.annotations.IndexReference;
 import com.jklas.search.annotations.SearchCollection;
 import com.jklas.search.annotations.SearchField;
 import com.jklas.search.annotations.SearchId;
@@ -304,7 +304,7 @@ public class VectorialRetrievalTest {
 			query.setPage(1);
 			query.setPageSize(30);
 
-			VectorSearch vectorSearch = new VectorSearch(query, new MemoryIndexReader());
+			VectorSearch  vectorSearch = new VectorSearch(query, new MemoryIndexReader());
 			List<VectorRankedResult> result = vectorSearch.search();
 
 			Assert.assertEquals(30, result.size() );
@@ -316,7 +316,7 @@ public class VectorialRetrievalTest {
 			query.setPage(2);
 			query.setPageSize(30);
 
-			VectorSearch vectorSearch = new VectorSearch(query, new MemoryIndexReader());
+			VectorSearch  vectorSearch = new VectorSearch(query, new MemoryIndexReader());
 			List<VectorRankedResult> result = vectorSearch.search();
 
 			Assert.assertEquals(20, result.size() );		}
@@ -327,7 +327,7 @@ public class VectorialRetrievalTest {
 			query.setPage(3);
 			query.setPageSize(30);
 
-			VectorSearch vectorSearch = new VectorSearch(query, new MemoryIndexReader());
+			VectorSearch  vectorSearch = new VectorSearch(query, new MemoryIndexReader());
 			List<VectorRankedResult> result = vectorSearch.search();
 
 			Assert.assertEquals(0, result.size() );
@@ -352,7 +352,7 @@ public class VectorialRetrievalTest {
 
 		VectorQueryParser parser = new VectorQueryParser("ipod touch", new NoTouchTextProcessor());
 
-		VectorSearch vectorSearch = new VectorSearch(parser.getQuery(), new MemoryIndexReader());
+		VectorSearch  vectorSearch = new VectorSearch(parser.getQuery(), new MemoryIndexReader());
 		List<VectorRankedResult> result = vectorSearch.search();
 
 		Assert.assertEquals( 1, result.size() );

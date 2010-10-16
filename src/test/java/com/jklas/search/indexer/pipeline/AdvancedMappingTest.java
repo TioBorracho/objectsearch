@@ -365,7 +365,6 @@ public class AdvancedMappingTest {
 		@SearchId public int id;
 	}
 	
-	@SuppressWarnings("unused")
 	@NotIndexable
 	private class ChildNotIndexable extends OtherSuperWithCascade {
 	}
@@ -385,7 +384,6 @@ public class AdvancedMappingTest {
 		Assert.assertTrue(mapping.isIndexable());
 	}
 
-	@SuppressWarnings("unused")
 	private class IndexableLeaf extends OtherSuperWithCascade {
 	}
 	

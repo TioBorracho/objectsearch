@@ -13,6 +13,7 @@ import com.jklas.search.annotations.SearchField;
 import com.jklas.search.annotations.SearchId;
 import com.jklas.search.annotations.SearchSort;
 import com.jklas.search.engine.BooleanSearch;
+import com.jklas.search.engine.Search;
 import com.jklas.search.engine.VectorSearch;
 import com.jklas.search.engine.dto.ObjectKeyResult;
 import com.jklas.search.engine.dto.ObjectResult;
@@ -262,12 +263,14 @@ public class SortTest {
 
 		Utils.setupSampleMemoryIndex(ipod230usd, ipod200usd ,ipod300usd);
 
-		VectorSearch search = new VectorSearch(new VectorQueryParser("ipod touch").getQuery(), MemoryIndexReaderFactory.getInstance());
+		Search search = new VectorSearch(new VectorQueryParser("ipod touch").getQuery(), MemoryIndexReaderFactory.getInstance());
 
 		Comparator<ObjectResult> priceComparator = new PriceComparator(SortEntity.class.getDeclaredField("price"));
 
-		List<VectorRankedResult> results = search.search( priceComparator );
+		@SuppressWarnings("unchecked")
+		List<VectorRankedResult> results = (List<VectorRankedResult>) search.search( priceComparator );
 
+				
 		Assert.assertEquals(2, results.get(0).getKey().getId());
 		Assert.assertEquals(1, results.get(1).getKey().getId());
 		Assert.assertEquals(0, results.get(2).getKey().getId());		 
@@ -281,11 +284,12 @@ public class SortTest {
 
 		Utils.setupSampleMemoryIndex(ipod230usd, ipod200usd ,ipod300usd);
 
-		VectorSearch search = new VectorSearch(new VectorQueryParser("ipod touch").getQuery(), MemoryIndexReaderFactory.getInstance());
+		Search search = new VectorSearch(new VectorQueryParser("ipod touch").getQuery(), MemoryIndexReaderFactory.getInstance());
 
 		Comparator<ObjectResult> priceComparator = new PriceComparator(SortEntity.class.getDeclaredField("price"));
 
-		List<VectorRankedResult> results = search.search( priceComparator );
+		@SuppressWarnings("unchecked")
+		List<VectorRankedResult> results = (List<VectorRankedResult>) search.search( priceComparator );
 
 		Assert.assertEquals(0, results.get(0).getKey().getId());
 		Assert.assertEquals(1, results.get(1).getKey().getId());

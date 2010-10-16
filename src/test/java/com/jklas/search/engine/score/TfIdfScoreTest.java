@@ -7,7 +7,6 @@ import org.junit.Test;
 
 import com.jklas.search.engine.VectorSearch;
 import com.jklas.search.engine.dto.VectorRankedResult;
-import com.jklas.search.engine.score.DefaultVectorRanker;
 import com.jklas.search.index.MasterAndInvertedIndexReader;
 import com.jklas.search.index.Term;
 import com.jklas.search.index.memory.MemoryIndexReader;

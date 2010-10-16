@@ -12,9 +12,9 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.jklas.search.annotations.IndexReference;
 import com.jklas.search.annotations.Indexable;
 import com.jklas.search.annotations.IndexableContainer;
-import com.jklas.search.annotations.IndexReference;
 import com.jklas.search.annotations.SearchCollection;
 import com.jklas.search.annotations.SearchContained;
 import com.jklas.search.annotations.SearchField;
@@ -25,14 +25,11 @@ import com.jklas.search.annotations.SearchSort;
 import com.jklas.search.annotations.Stemming;
 import com.jklas.search.annotations.TextProcessor;
 import com.jklas.search.configuration.AnnotationConfigurationMapper;
-import com.jklas.search.engine.Language;
 import com.jklas.search.engine.processor.DefaultObjectTextProcessor;
 import com.jklas.search.engine.processor.NullProcessor;
 import com.jklas.search.engine.processor.OneTermTextProcessor;
+import com.jklas.search.engine.stemming.EnglishSnowballStemmingStrategy;
 import com.jklas.search.engine.stemming.StemType;
-import com.jklas.search.engine.stemming.Stemmer;
-import com.jklas.search.engine.stemming.StemmerStrategy;
-import com.jklas.search.engine.stemming.snowball.englishStemmer;
 import com.jklas.search.exception.IndexObjectException;
 import com.jklas.search.exception.SearchEngineMappingException;
 import com.jklas.search.index.PostingMetadata;
@@ -269,21 +266,14 @@ public class DefaultIndexerPipelineTest {
 		@SearchId
 		private int id = 1;
 		@SuppressWarnings("unused")
-		@SearchField @Stemming(stemType=StemType.FULL_STEM,strategy=EnglishSnowballDummyStemStrategy.class)
+		@SearchField @Stemming(stemType=StemType.FULL_STEM,strategy=EnglishSnowballStemmingStrategy.class)
 		private String value = "JULIAN";
 		
 		public void setValue(String value) {
 			this.value = value;
 		}
 	}
-	
-	public static class EnglishSnowballDummyStemStrategy implements StemmerStrategy {
-		@Override
-		public Stemmer getStemmer(Language language, StemType stemType) {		
-			return new englishStemmer();
-		}
-	}
-	
+		
 	@Test
 	public void testSnowballStemmerForEnglishWord() throws IndexObjectException, SearchEngineMappingException {
 		
@@ -360,12 +350,12 @@ public class DefaultIndexerPipelineTest {
 		@SearchField
 		private String attribute1 = "WORKS";
 		
-		@SearchField @Stemming(stemType=StemType.FULL_STEM,strategy=EnglishSnowballDummyStemStrategy.class)
+		@SearchField @Stemming(stemType=StemType.FULL_STEM,strategy=EnglishSnowballStemmingStrategy.class)
 		private String attribute2 = "WORKS";
 		
 		@SearchField
 		@TextProcessor(DefaultObjectTextProcessor.class)
-		@Stemming(stemType=StemType.FULL_STEM,strategy=EnglishSnowballDummyStemStrategy.class)
+		@Stemming(stemType=StemType.FULL_STEM,strategy=EnglishSnowballStemmingStrategy.class)
 		private String attribute3 = "WORKS";
 		
 		@SearchFilter

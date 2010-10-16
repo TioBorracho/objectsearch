@@ -9,7 +9,6 @@ import java.util.Set;
 import com.jklas.search.engine.dto.ObjectKeyResult;
 import com.jklas.search.engine.dto.ObjectResult;
 import com.jklas.search.engine.filter.FilterChain;
-import com.jklas.search.engine.filter.ImmediateRemoveFilterChain;
 import com.jklas.search.index.IndexReaderFactory;
 import com.jklas.search.index.MasterAndInvertedIndexReader;
 import com.jklas.search.query.bool.BooleanQuery;
@@ -27,7 +26,7 @@ import com.jklas.search.sort.PreSort;
  * @author Julián Klas (jklas@fi.uba.ar)
  * @date 03/2010
  */
-public class BooleanSearch {
+public class BooleanSearch implements Search {
 
 	/**
 	 * This object has the responsability of holding
@@ -99,7 +98,7 @@ public class BooleanSearch {
 	 * @param comparator the comparator for the objects on the result set
 	 * @return an ordered list of results that matches the boolean query
 	 */
-	public List<ObjectKeyResult> search(Comparator<? super ObjectKeyResult> comparator) {
+	public List<ObjectKeyResult> search(Comparator<? super ObjectResult> comparator) {
 		return ResultWindow.windowList( sortResults(search(), comparator) , query);
 	}
 	
