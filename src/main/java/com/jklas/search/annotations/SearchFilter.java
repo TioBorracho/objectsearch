@@ -36,7 +36,7 @@ import java.lang.annotation.Target;
  * If you want to filter after the hydration process,
  * you shouldn't use this annotation
  * 
- * @author Julián
+ * @author Julián Klas
  *
  */
 @Retention(RetentionPolicy.RUNTIME)

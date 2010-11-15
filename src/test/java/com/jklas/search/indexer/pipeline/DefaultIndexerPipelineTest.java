@@ -39,7 +39,6 @@ import com.jklas.search.annotations.SearchContained;
 import com.jklas.search.annotations.SearchField;
 import com.jklas.search.annotations.SearchFilter;
 import com.jklas.search.annotations.SearchId;
-import com.jklas.search.annotations.SearchIgnore;
 import com.jklas.search.annotations.SearchSort;
 import com.jklas.search.annotations.Stemming;
 import com.jklas.search.annotations.TextProcessor;
@@ -620,28 +619,6 @@ public class DefaultIndexerPipelineTest {
 		dto = new IndexObjectDto(container);
 		termPostingMap = semiIndex.getSemiIndexMap().get(dto);
 		Assert.assertEquals( 3, termPostingMap.size() );	
-	}
-	
-	@Indexable @IndexableContainer 
-	public class DummyContainterWithSearchIgnore {
-		@SearchId public int id = 0;		
-		@SearchIgnore DummyContainterWithSearchIgnore ignored = null;
-	}
-	
-	@Test
-	public void SearchIgnoreIsIgnored() throws IndexObjectException, SearchEngineMappingException {
-		
-		DummyContainterWithSearchIgnore entityWithIgnore = new DummyContainterWithSearchIgnore();
-				
-		Utils.configureAndMap(entityWithIgnore);
-		
-		DefaultIndexingPipeline pipeline = new DefaultIndexingPipeline();
-		
-		SemiIndex semiIndex = pipeline.processObject(entityWithIgnore);
-				
-		for (IndexObjectDto dto : semiIndex.getSemiIndexMap().keySet()) {
-			Assert.assertSame( dto.getEntity() , entityWithIgnore);
-		}	
 	}
 	
 	@Indexable @IndexableContainer

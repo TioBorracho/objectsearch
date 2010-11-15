@@ -22,6 +22,14 @@ package com.jklas.search.engine;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ *
+ * This is the representation of the concept of "language"
+ * inside this framework
+ * 
+ * @author Julián Klas
+ *
+ */
 public class Language {
 
 	private final String identifier;

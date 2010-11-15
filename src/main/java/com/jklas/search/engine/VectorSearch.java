@@ -38,6 +38,13 @@ import com.jklas.search.query.operator.Operator;
 import com.jklas.search.query.vectorial.VectorQuery;
 import com.jklas.search.sort.PreSort;
 
+/**
+ * 
+ * Vector Retrieval Model implementation of Search interface.
+ * 
+ * @author Julián Klas
+ *
+ */
 public class VectorSearch implements Search {
 
 	private final VectorQuery query;

@@ -24,6 +24,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * 
+ * This annotation tells the Search Engine
+ * that some field is used as the object identifier.
+ * 
+ * @author Julián Klas
+ *
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface SearchId {

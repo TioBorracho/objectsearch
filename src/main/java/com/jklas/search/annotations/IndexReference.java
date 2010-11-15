@@ -19,7 +19,16 @@
  */
 package com.jklas.search.annotations;
 
-
+/**
+ * This enum must be used to tell the
+ * Search Engine that terms belonging
+ * to an enclosed object should be indexed
+ * referencing their container, themselves
+ * or both of them.  
+ * 
+ * @author Julián Klas
+ *
+ */
 public enum IndexReference {
 	CONTAINER,
 	SELF,

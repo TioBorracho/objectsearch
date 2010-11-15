@@ -26,8 +26,12 @@ import java.lang.annotation.Target;
 
 /**
  * <p>
- * Anotación que indica que el campo anotado
- * debe ser indexado por el Search Engine.
+ * This annotation indicates that objects
+ * contained by a collection must be indexed by the Search Engine.
+ * 
+ * This annotation must not be used when the annotated
+ * field is not assignable to Collection<?>
+ * 
  * </p>
  * 
  * @author Julián

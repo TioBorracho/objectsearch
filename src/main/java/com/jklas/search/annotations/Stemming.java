@@ -28,6 +28,14 @@ import com.jklas.search.engine.stemming.IdentityStemmerStrategy;
 import com.jklas.search.engine.stemming.StemType;
 import com.jklas.search.engine.stemming.StemmerStrategy;
 
+/**
+ * 
+ * This annotation tells the Search Engine which
+ * stemmer strategy will be used for processing this field's values.
+ * 
+ * @author Julián Klas
+ *
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface Stemming {

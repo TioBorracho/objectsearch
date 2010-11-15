@@ -21,24 +21,19 @@ package com.jklas.search.indexer;
 
 /**
  * <p>
- * Esta interfaz debe ser implementada por el usuario 
- * del framework para proveer un método propio de  
- * intepretación de un campo indexable.
+ * This interface must be implemented to provide 
+ * a custom interpretation of some field content.
  * </p>
  * <p>
- * Si no se provee un método de transformación, el 
- * indexador utilizará el método toString()
- * del campo que se está indexando.
+ * If no custom transformation is provided, the
+ * Search Engine will execute the toString() method
+ * to access the field content.
  * </p>
  * <p>
- * Este mecanismo permite que un objeto tenga un
- * comportamiento para el método toString()
- * en la aplicación donde se creó y otro comportamiendo
- * para el Search Engine.
+ * This mechanism allows the toString() method to behave
+ * correctly in the indexing and application contexts.
  * </p>
- * <b>IMPORTANTE</b>: las clases transformadoras permanecen en 
- * <b>cache</b>, por lo que no deben tener estado conversacional.
- * Todo su estado se debe cargar en el constructor.
+ * <b>Important</b>: transform classes must be stateless.
  * 
  * 
  * @author Julián Klas

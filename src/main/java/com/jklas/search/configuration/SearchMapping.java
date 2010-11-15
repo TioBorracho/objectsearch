@@ -28,6 +28,14 @@ import com.jklas.search.engine.processor.ObjectTextProcessor;
 import com.jklas.search.exception.SearchEngineMappingException;
 import com.jklas.search.index.selector.IndexSelector;
 
+/**
+ * This object contains all the information needed by
+ * the Search Engine to work with a particular entity.
+ * 
+ * 
+ * @author Julián Klas
+ *
+ */
 public class SearchMapping {
 
 	/**

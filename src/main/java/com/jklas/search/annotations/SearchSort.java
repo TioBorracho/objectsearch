@@ -24,6 +24,15 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * 
+ * This annotation tells the Search Engine
+ * that a field's value will be used for sorting results,
+ * so that it must be stored on inverted indexes.
+ * 
+ * @author Julián Klas
+ *
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface SearchSort {

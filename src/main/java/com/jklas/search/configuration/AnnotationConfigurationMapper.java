@@ -49,7 +49,17 @@ import com.jklas.search.index.selector.IndexSelectorByConstant;
 import com.jklas.search.index.selector.IndexSelectorByField;
 import com.jklas.search.indexer.Transform;
 
-
+/**
+ * Objects of this class are responsible
+ * for creating the SearchMapping defined
+ * by the annotations on the entity's class.
+ * 
+ * This should be used only during the mapping phase,
+ * which normally takes place on application startup.
+ * 
+ * @author Julián Klas
+ *
+ */
 public class AnnotationConfigurationMapper {
 
 	private final boolean recursive ;

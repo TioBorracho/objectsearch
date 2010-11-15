@@ -27,10 +27,17 @@ import java.lang.annotation.Target;
 import com.jklas.search.engine.processor.DefaultObjectTextProcessor;
 import com.jklas.search.engine.processor.ObjectTextProcessor;
 
+/**
+ * This annotation states which text processor
+ * will work on this object or field.
+ * 
+ * @author Julián Klas
+ *
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE,ElementType.FIELD})
 public @interface TextProcessor {	
-		/**
+	/**
 	 * Sets the default text processor for the fields of this class
 	 * 
 	 * Note that this can be overriden by the {@link SearchField} annotation.

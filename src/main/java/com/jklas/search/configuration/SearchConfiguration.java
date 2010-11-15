@@ -23,6 +23,14 @@ import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * This class holds all the mapping
+ * that took place.
+ * 
+ *  
+ * @author Julián Klas
+ *
+ */
 public class SearchConfiguration {
 
 	private Map<Class<?>,SearchMapping> mappings = new ConcurrentHashMap<Class<?>,SearchMapping>();

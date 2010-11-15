@@ -31,6 +31,13 @@ import com.jklas.search.engine.dto.ObjectResult;
 import com.jklas.search.engine.dto.VectorRankedResult;
 import com.jklas.search.query.SearchQuery;
 
+/**
+ * This utility class takes care of result windowing (that is, cutting the result
+ * lists to fit the desired size).
+ * 
+ * @author Julián Klas
+ *
+ */
 public class ResultWindow {
 
 	public static Set<VectorRankedResult> windowVectorSet(Set<? extends ObjectResult> retrieved, SearchQuery query) {

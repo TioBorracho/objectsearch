@@ -28,6 +28,14 @@ import com.jklas.search.engine.stemming.StemType;
 import com.jklas.search.engine.stemming.StemmerStrategy;
 import com.jklas.search.indexer.Transform;
 
+/**
+ * 
+ * This object contains all the information needed by the 
+ * Search Engine to work with a particular entity's field.
+ * 
+ * @author Julián Klas
+ *
+ */
 public class MappedFieldDescriptor {
 
 	private Field field;

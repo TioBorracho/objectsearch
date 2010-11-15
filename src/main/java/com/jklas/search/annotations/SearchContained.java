@@ -26,11 +26,17 @@ import java.lang.annotation.Target;
 
 /**
  * <p>
- * Anotación que indica que el campo anotado
- * debe ser indexado por el Search Engine.
+ * This annotation tells the Search Engine
+ * that the annotated field must be indexed
+ * as part of an @IndexableContainer
+ * 
+ * The reference property can be used to 
+ * reference the enclosing entity, the contained
+ * object or both.
+ * 
  * </p>
  * 
- * @author Julián
+ * @author Julián Klas
  * @date 2009-07-26
  * @since 1.0
  * 

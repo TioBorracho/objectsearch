@@ -24,6 +24,18 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * 
+ * This annotation tells the Search Engine that
+ * field's who belongs to instances of this class
+ * have their texts expressed in some language.
+ * 
+ * Language is important for text processing tasks
+ * such as stemming, word splitting, etc.
+ * 
+ * @author Julián Klas
+ *
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
 public @interface LangId {

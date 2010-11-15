@@ -24,6 +24,20 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+
+/**
+ * This annotation tells the Search Engine
+ * that the annotated field or method
+ * will select the appropiate index for 
+ * the object being indexed.
+ * 
+ * In the context of a search, this annotation
+ * will tells which method or field must
+ * be used for index name resolution. 
+ * 
+ * @author Julián Klas
+ *
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD,ElementType.METHOD})
 public @interface IndexSelector {

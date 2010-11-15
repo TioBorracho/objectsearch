@@ -29,11 +29,19 @@ import com.jklas.search.indexer.Transform;
 
 /**
  * <p>
- * Anotación que indica que el campo anotado
- * debe ser indexado por el Search Engine.
+ * This annotation states that this field
+ * contains text that must be indexed.
+ * 
+ * You can specify a JavaBean access style via
+ * the accessByGet property
+ * 
+ * If you need to apply some kind of transformation to the text
+ * before applying the text processor, you can provide an implementation
+ * of the Transform class.
+ * 
  * </p>
  * 
- * @author Julián
+ * @author Julián Klas
  * @date 2009-07-26
  * @since 1.0
  * 

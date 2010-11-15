@@ -26,29 +26,29 @@ import java.lang.annotation.Target;
 
 /**
  * <p>
- * Anotación que marca que una clase es contenedora
- * de una clase que queremos indexar.
+ * This annotations marks some class as a container
+ * of another class that we want to index.
  * 
- * Esta anotación
- * debe ser usada cuando el interceptor no tiene acceso
- * al objeto que realmente queremos indexar sino
- * a un Data Transfer Object que contiene al objeto que
- * queremos indexar.
+ * This annotation must be used when interceptor
+ * doesn't have access to the object that we
+ * want to index but it has access to a container object (DTO).
+ * 
  * </p>
  * 
  * <p>
- * Esta anotación indica que se debe indexar la clase
- * contenida. No se indexa la clase contenedora.
+ * This annotation states that the contained object
+ * is the one that must be indexed. The enclosing
+ * object won't be indexed.
  * </p>
  * 
  * <p>
- * El efecto es el mismo que si marcara como indexable
- * la clase contenida. Es necesario que el objeto
- * contenido esté marcado como indexable con el 
- * annotation correspondiente.
+ * The effect is the same that you'd get annotating
+ * the contained object as @Indexbale
+ * 
+ * It's required that the contained object is annotated as @Indexbale 
  * </p>
  * 
- * @author Julián
+ * @author Julián Klas
  * @since 1.0
  * @date 2009-07-26
  */
