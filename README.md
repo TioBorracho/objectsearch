@@ -18,10 +18,12 @@ Soon: there will be a Maven dependency on public repos and a complete documentat
 ## Im using Solr, Lucene, Hibernate Search, Compass Project, what are the biggest differences?
 
 The biggest differences are:
+
 * Object vs. Documents: while Lucene is *document* oriented, object search is *object* oriented (we index objects and it's relationships).
 * Only One Framework: this framework is autocontained from one end to the other.
 
 On the other side, all of the above frameworks are based on Lucene and sooner or later you'll end up working with 2 frameworks: Lucene and it's wrapper.
+
 * Object Query: the query doens't have to be plain text, you can provide a domain object like the ones you've indexed.
 
 When comparing to Compass or Hibernate Search, you'll find that we are not as mature as those projects, that means that some features aren't implemented yet.
