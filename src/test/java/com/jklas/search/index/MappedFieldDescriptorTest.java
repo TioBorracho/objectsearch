@@ -31,7 +31,7 @@ import com.jklas.search.engine.Language;
 import com.jklas.search.engine.stemming.StemType;
 import com.jklas.search.engine.stemming.Stemmer;
 import com.jklas.search.engine.stemming.StemmerStrategy;
-import com.jklas.search.engine.stemming.snowball.spanishStemmer;
+import com.jklas.search.engine.stemming.snowball.SpanishStemmer;
 import com.jklas.search.indexer.Transform;
 
 public class MappedFieldDescriptorTest {
@@ -55,7 +55,7 @@ public class MappedFieldDescriptorTest {
 
 			@Override
 			public Stemmer getStemmer(Language language, StemType stemType) {				
-				return new spanishStemmer();
+				return new SpanishStemmer();
 			}
 
 		};

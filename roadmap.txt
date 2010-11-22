@@ -1,3 +1,3 @@
-- Implementar TF-IDF complejo en modelo vectorial como Lucene
-- Implementar modelo híbrido entre vectorial y booleano
-- Permitir variar entre modelos de IR por configuración
+- Implement more complex TF-IDF formulas
+- Implement hibrid vector-boolean model
+- Do better stop word mechanism

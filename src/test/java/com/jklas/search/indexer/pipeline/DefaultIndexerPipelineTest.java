@@ -47,7 +47,9 @@ import com.jklas.search.engine.processor.DefaultObjectTextProcessor;
 import com.jklas.search.engine.processor.NullProcessor;
 import com.jklas.search.engine.processor.OneTermTextProcessor;
 import com.jklas.search.engine.stemming.EnglishSnowballStemmingStrategy;
+import com.jklas.search.engine.stemming.SpanishSnowballStemmingStrategy;
 import com.jklas.search.engine.stemming.StemType;
+import com.jklas.search.engine.stemming.snowball.SpanishNumberStemmer;
 import com.jklas.search.exception.IndexObjectException;
 import com.jklas.search.exception.SearchEngineMappingException;
 import com.jklas.search.index.PostingMetadata;
@@ -313,6 +315,89 @@ public class DefaultIndexerPipelineTest {
 		
 		for ( Map.Entry<Term, PostingMetadata> postings	: termPostingMap.entrySet() ) {
 			Assert.assertEquals( postings.getKey().getValue(), "Work".toUpperCase() );
+		}
+		
+	}
+	
+	@Indexable
+	private class SpanishSnowballDummy {
+		@SuppressWarnings("unused")
+		@SearchId
+		private int id = 1;
+		
+		@SuppressWarnings("unused")
+		@SearchField @Stemming(stemType=StemType.FULL_STEM,strategy=SpanishSnowballStemmingStrategy.class)
+		private String value = "";
+		
+		public void setValue(String value) {
+			this.value = value;
+		}
+	}
+		
+	@Test
+	public void testSnowballFullStemmerForSpanishWord() throws IndexObjectException, SearchEngineMappingException {
+		
+		SpanishSnowballDummy dummy = new SpanishSnowballDummy();
+		
+		Utils.configureAndMap(dummy);
+		
+		DefaultIndexingPipeline pipeline = new DefaultIndexingPipeline();
+		
+		dummy.setValue("TRABAJOS");
+				
+		SemiIndex semiIndex = pipeline.processObject(dummy);
+		
+		IndexObjectDto dto =  new IndexObjectDto(dummy);
+		
+		Map<Term, PostingMetadata> termPostingMap = semiIndex.getSemiIndexMap().get(dto);
+		
+		Assert.assertEquals( 1, termPostingMap.size() );
+		
+		for ( Map.Entry<Term, PostingMetadata> postings	: termPostingMap.entrySet() ) {
+			Assert.assertEquals( postings.getKey().getValue(), "TRABAJ".toUpperCase() );
+		}
+		
+	}
+	
+	@Indexable
+	private class SpanishNumberSnowballStemDummy {
+		@SuppressWarnings("unused")
+		@SearchId
+		private int id = 1;
+		
+		@SuppressWarnings("unused")
+		@SearchField @Stemming(stemType=StemType.NUMBER_STEM,strategy=SpanishSnowballStemmingStrategy.class)
+		private String value = "";
+		
+		public void setValue(String value) {
+			this.value = value;
+		}
+	}
+		
+	@Test
+	public void testSnowballNumberStemmerForSpanishWord() throws IndexObjectException, SearchEngineMappingException {
+		
+		SpanishNumberSnowballStemDummy dummy = new SpanishNumberSnowballStemDummy();
+		
+		Utils.configureAndMap(dummy);
+		
+		DefaultIndexingPipeline pipeline = new DefaultIndexingPipeline();
+		
+		dummy.setValue("trabajos");
+				
+		SemiIndex semiIndex = pipeline.processObject(dummy);
+		
+		IndexObjectDto dto =  new IndexObjectDto(dummy);
+		
+		Map<Term, PostingMetadata> termPostingMap = semiIndex.getSemiIndexMap().get(dto);
+		
+		Assert.assertEquals( 1, termPostingMap.size() );
+		
+		SpanishNumberStemmer spanishNumberStemmer = new SpanishNumberStemmer();
+		Term directStem = spanishNumberStemmer.stem(new Term("trabajos"));
+		
+		for ( Map.Entry<Term, PostingMetadata> postings	: termPostingMap.entrySet() ) {
+			Assert.assertEquals( postings.getKey().getValue(), directStem.getValue().toUpperCase() );
 		}
 		
 	}
