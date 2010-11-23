@@ -26,7 +26,7 @@ import org.junit.Test;
 import com.jklas.search.SearchEngine;
 import com.jklas.search.exception.IndexObjectException;
 import com.jklas.search.exception.SearchEngineMappingException;
-import com.jklas.search.index.dto.IndexObjectDto;
+import com.jklas.search.index.dto.IndexObject;
 import com.jklas.search.index.memory.MemoryIndex;
 import com.jklas.search.index.memory.MemoryIndexWriterFactory;
 import com.jklas.search.indexer.pipeline.DefaultIndexingPipeline;
@@ -57,7 +57,7 @@ public class SemiOnlineIndexerTest {
 		pool.start();
 		
 		try {
-			semiOnlineIndexer.create(new IndexObjectDto(entity,0));		
+			semiOnlineIndexer.create(new IndexObject(entity,0));		
 		} finally {
 			semiOnlineIndexer.destroy();
 		}
@@ -98,7 +98,7 @@ public class SemiOnlineIndexerTest {
 		pool.start();
 		
 		try {
-			semiOnlineIndexer.create(new IndexObjectDto(entity,0));		
+			semiOnlineIndexer.create(new IndexObject(entity,0));		
 		} finally {
 			semiOnlineIndexer.destroy();
 		}

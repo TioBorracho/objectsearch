@@ -23,7 +23,7 @@ import java.io.Serializable;
 
 import com.jklas.search.SearchEngine;
 import com.jklas.search.exception.IndexObjectException;
-import com.jklas.search.index.dto.IndexObjectDto;
+import com.jklas.search.index.dto.IndexObject;
 import com.jklas.search.interceptors.SearchInterceptor;
 
 /**
@@ -53,7 +53,7 @@ public class ExplicitInterceptor {
 				return false;
 			}
 			
-			searchInterceptor.createOrUpdate(new IndexObjectDto(entity, id));
+			searchInterceptor.createOrUpdate(new IndexObject(entity, id));
 			return true;
 		} catch (IndexObjectException e) {
 //			LogFactory.getLog(getClass()).error("Error al indexar. Entidad: "+entity+" - id:"+id,e);
@@ -67,7 +67,7 @@ public class ExplicitInterceptor {
 				return false;
 			}
 			
-			searchInterceptor.delete(new IndexObjectDto(entity, id));
+			searchInterceptor.delete(new IndexObject(entity, id));
 			
 			return true;
 		} catch (IndexObjectException e) {
@@ -82,7 +82,7 @@ public class ExplicitInterceptor {
 			if(!isMapped(entity)) {				
 				return false;
 			}
-			searchInterceptor.update(new IndexObjectDto(entity, id));
+			searchInterceptor.update(new IndexObject(entity, id));
 			return true;
 		} catch (IndexObjectException e) {
 	//		LogFactory.getLog(getClass()).error("Error al indexar. Entidad: "+entity+" - id:"+id,e);
@@ -104,7 +104,7 @@ public class ExplicitInterceptor {
 				return false;
 			}
 			
-			searchInterceptor.create(new IndexObjectDto(entity, id));
+			searchInterceptor.create(new IndexObject(entity, id));
 			
 			return true;
 		} catch (IndexObjectException e) {

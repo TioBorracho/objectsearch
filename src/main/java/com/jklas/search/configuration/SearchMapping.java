@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.jklas.search.engine.Language;
+import com.jklas.search.engine.operations.StopWordProvider;
 import com.jklas.search.engine.processor.ObjectTextProcessor;
 import com.jklas.search.exception.SearchEngineMappingException;
 import com.jklas.search.index.selector.IndexSelector;
@@ -65,6 +66,8 @@ public class SearchMapping {
 	private boolean isLanguageSelectedByField;
 
 	private ObjectTextProcessor textProcessor;
+	
+	private StopWordProvider stopWordProvider;
 
 	private boolean isIndexableContainer =false;
 
@@ -220,5 +223,13 @@ public class SearchMapping {
 	
 	public boolean isIndexable() {
 		return isIndexable;
+	}
+	
+	public StopWordProvider getStopWordProvider() {
+		return stopWordProvider;
+	}
+	
+	public void setStopWordProvider(StopWordProvider stopWordProvider) {
+		this.stopWordProvider = stopWordProvider;
 	}
 }

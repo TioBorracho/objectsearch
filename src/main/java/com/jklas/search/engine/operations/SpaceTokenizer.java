@@ -24,8 +24,9 @@ import java.util.List;
 import com.jklas.search.index.Term;
 import com.jklas.search.util.TextLibrary;
 
-public class SpaceTokenizer {
+public class SpaceTokenizer implements Tokenizer {
 
+	@Override
 	public List<Term> tokenize(String text) {
 		return TextLibrary.tokenize(text);
 	}

@@ -22,6 +22,7 @@ package com.jklas.search.engine.processor;
 import java.util.List;
 
 import com.jklas.search.configuration.MappedFieldDescriptor;
+import com.jklas.search.engine.operations.StopWordCleaner;
 import com.jklas.search.index.Term;
 
 public interface ObjectTextProcessor {
@@ -32,4 +33,5 @@ public interface ObjectTextProcessor {
 	
 	public abstract List<Term> processField(String extractedText, MappedFieldDescriptor fieldDescriptor);
 
+	public abstract StopWordCleaner getStopWordCleaner();
 }

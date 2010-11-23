@@ -21,7 +21,7 @@ package com.jklas.search.indexer.semionline;
 
 import java.util.List;
 
-import com.jklas.search.index.dto.IndexObjectDto;
+import com.jklas.search.index.dto.IndexObject;
 import com.jklas.search.indexer.IndexerAction;
 import com.jklas.search.util.Pair;
 
@@ -32,9 +32,9 @@ public interface SemiOnlineWorkerPool {
 	
 	public int getGlobalTaskCount();
 	
-	public void newTask(IndexerAction indexerAction, IndexObjectDto objectToIndex);
+	public void newTask(IndexerAction indexerAction, IndexObject objectToIndex);
 	
-	public void newTask(List<Pair<IndexerAction,IndexObjectDto>> objectsToIndex);
+	public void newTask(List<Pair<IndexerAction,IndexObject>> objectsToIndex);
 	
 	public void destroy();
 

@@ -42,6 +42,8 @@ import com.jklas.search.annotations.SearchSort;
 import com.jklas.search.annotations.Stemming;
 import com.jklas.search.annotations.TextProcessor;
 import com.jklas.search.engine.Language;
+import com.jklas.search.engine.NullStopWordProvider;
+import com.jklas.search.engine.operations.StopWordProvider;
 import com.jklas.search.engine.processor.ObjectTextProcessor;
 import com.jklas.search.engine.stemming.StemmerStrategy;
 import com.jklas.search.exception.SearchEngineMappingException;
@@ -378,12 +380,20 @@ public class AnnotationConfigurationMapper {
 
 		TextProcessor textProcessorAnnotation = clazz.getAnnotation(TextProcessor.class);
 
-		if(textProcessorAnnotation!=null) mapping.setTextProcessor( (ObjectTextProcessor) findNoArgConstructorAndInvoke(textProcessorAnnotation.value()) );
-		else if(mapping.getTextProcessor()==null) mapping.setTextProcessor( (ObjectTextProcessor) findNoArgConstructorAndInvoke(ObjectTextProcessor.DFLT_TEXT_PROCESSOR) );
-
 		LangId langAnnotation = clazz.getAnnotation(LangId.class);
-
+		
 		if(langAnnotation!=null) mapping.setLanguage(new Language(langAnnotation.value()));
+		else if(mapping.getLanguage()==null) mapping.setLanguage(Language.UNKOWN_LANGUAGE);
+
+		if(textProcessorAnnotation!=null) {
+			mapping.setTextProcessor( (ObjectTextProcessor) findNoArgConstructorAndInvoke(textProcessorAnnotation.value()) );
+			mapping.setStopWordProvider( (StopWordProvider) findNoArgConstructorAndInvoke(textProcessorAnnotation.stopWordProvider()) );
+		} else if(mapping.getTextProcessor()==null) {
+			mapping.setTextProcessor( (ObjectTextProcessor) findNoArgConstructorAndInvoke(ObjectTextProcessor.DFLT_TEXT_PROCESSOR) );
+			mapping.setStopWordProvider( new NullStopWordProvider() );
+		}
+		
+		mapping.getStopWordProvider().provideStopWords(mapping.getLanguage(), mapping.getTextProcessor().getStopWordCleaner());
 
 		mapping.setIndexableContainer(isIndexableContainer(clazz));
 		mapping.setIndexable(true);
@@ -429,21 +439,39 @@ public class AnnotationConfigurationMapper {
 
 	private void mapSearchField(Field field, Class<?> clazz, SearchMapping mapping, MappedFieldDescriptor fieldDescriptor) throws SearchEngineMappingException {		
 		setSearchField(field,clazz,mapping,fieldDescriptor);
+		setFieldLanguage(field,clazz,mapping,fieldDescriptor);
 		setTextProcessor(field,clazz,mapping,fieldDescriptor);
 		setStemmingStrategy(field,clazz,fieldDescriptor);	
+	}
+
+	private void setFieldLanguage(Field field, Class<?> clazz, SearchMapping mapping, MappedFieldDescriptor fieldDescriptor) {
+		LangId langIdAnnotation = field.getAnnotation(LangId.class);
+		
+		if(langIdAnnotation == null) {
+			fieldDescriptor.setLanguage(mapping.getLanguage());
+		} else {
+			fieldDescriptor.setLanguage(new Language(langIdAnnotation.value()));
+		}
+		
 	}
 
 	private void setTextProcessor(Field field, Class<?> clazz, SearchMapping mapping, MappedFieldDescriptor fieldDescriptor) throws SearchEngineMappingException {
 		TextProcessor textProcessorAnnotation = field.getAnnotation(TextProcessor.class);
 
 		ObjectTextProcessor fieldTextProcessor;
-
-		if(textProcessorAnnotation!=null)
+		StopWordProvider stopWordProvider ;
+		
+		if(textProcessorAnnotation!=null) {
 			fieldTextProcessor = (ObjectTextProcessor)findNoArgConstructorAndInvoke(textProcessorAnnotation.value());
-		else
+			stopWordProvider = (StopWordProvider)findNoArgConstructorAndInvoke(textProcessorAnnotation.stopWordProvider());
+			stopWordProvider.provideStopWords(fieldDescriptor.getLanguage(), fieldTextProcessor.getStopWordCleaner());
+		} else {			
 			fieldTextProcessor = mapping.getTextProcessor();
+			stopWordProvider = mapping.getStopWordProvider();
+		}
 
 		fieldDescriptor.setTextProcessor(fieldTextProcessor);
+		fieldDescriptor.setStopWordProvider(stopWordProvider);
 	}
 
 	private void setSearchFilter(Field field, Class<?> clazz, MappedFieldDescriptor fieldDescriptor) {

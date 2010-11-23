@@ -42,7 +42,7 @@ import com.jklas.search.exception.IndexObjectException;
 import com.jklas.search.exception.SearchEngineException;
 import com.jklas.search.index.PostingMetadata;
 import com.jklas.search.index.Term;
-import com.jklas.search.index.dto.IndexObjectDto;
+import com.jklas.search.index.dto.IndexObject;
 import com.jklas.search.indexer.Transform;
 import com.jklas.search.util.Pair;
 import com.jklas.search.util.TextLibrary;
@@ -76,7 +76,7 @@ public class DefaultIndexingPipeline implements IndexingPipeline {
 		boolean isIndexableContainer = isIndexableContainer(entity);
 
 		if(isIndexable) {
-			IndexObjectDto indexObjectDto = new IndexObjectDto(entity);
+			IndexObject indexObjectDto = new IndexObject(entity);
 			semiIndex = new SemiIndex(indexObjectDto, processLeafObject(indexObjectDto));				
 
 			if(isIndexableContainer) {
@@ -87,7 +87,7 @@ public class DefaultIndexingPipeline implements IndexingPipeline {
 			if(isIndexableContainer) {
 				semiIndex =  processContainerObject(entity, indexContext);
 			} else {
-				IndexObjectDto indexObjectDto = new IndexObjectDto(entity, IndexObjectDto.NO_ID);
+				IndexObject indexObjectDto = new IndexObject(entity, IndexObject.NO_ID);
 				semiIndex = new SemiIndex(indexObjectDto, Collections.EMPTY_MAP);				
 			}
 		}
@@ -207,7 +207,7 @@ public class DefaultIndexingPipeline implements IndexingPipeline {
 		return configuration.getMapping(entity).isIndexableContainer();
 	}
 	
-	private Map<Term, PostingMetadata> processLeafObject(IndexObjectDto indexObjectDto) throws IndexObjectException {
+	private Map<Term, PostingMetadata> processLeafObject(IndexObject indexObjectDto) throws IndexObjectException {
 		Object entity = indexObjectDto.getEntity();
 
 		Class<?> entityClass = entity.getClass();

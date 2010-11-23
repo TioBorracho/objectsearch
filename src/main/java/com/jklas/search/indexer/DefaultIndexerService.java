@@ -38,7 +38,7 @@ import com.jklas.search.index.IndexWriterFactory;
 import com.jklas.search.index.ObjectKey;
 import com.jklas.search.index.PostingMetadata;
 import com.jklas.search.index.Term;
-import com.jklas.search.index.dto.IndexObjectDto;
+import com.jklas.search.index.dto.IndexObject;
 import com.jklas.search.indexer.pipeline.IndexingPipeline;
 import com.jklas.search.indexer.pipeline.SemiIndex;
 import com.jklas.search.util.SearchLibrary;
@@ -101,30 +101,30 @@ public class DefaultIndexerService implements IndexerService {
 	}
 
 	@Override
-	public void create(IndexObjectDto indexObjectDto) throws IndexObjectException {
+	public void create(IndexObject indexObjectDto) throws IndexObjectException {
 		nullCheck(indexObjectDto);
 		create(indexObjectDto.getEntity());		
 	}
 
 	@Override
-	public void createOrUpdate(IndexObjectDto indexObjectDto) throws IndexObjectException {
+	public void createOrUpdate(IndexObject indexObjectDto) throws IndexObjectException {
 		nullCheck(indexObjectDto);
 		createOrUpdate(indexObjectDto.getEntity());		
 	}
 
 	@Override
-	public void delete(IndexObjectDto indexObjectDto) throws IndexObjectException {
+	public void delete(IndexObject indexObjectDto) throws IndexObjectException {
 		nullCheck(indexObjectDto);
 		delete(indexObjectDto.getEntity());		
 	}
 
 	@Override
-	public void update(IndexObjectDto indexObjectDto) throws IndexObjectException {
+	public void update(IndexObject indexObjectDto) throws IndexObjectException {
 		nullCheck(indexObjectDto);
 		update(indexObjectDto.getEntity());		
 	}
 
-	private void nullCheck(IndexObjectDto indexObjectDto) throws IndexObjectException {
+	private void nullCheck(IndexObject indexObjectDto) throws IndexObjectException {
 		if(indexObjectDto == null) throw new IndexObjectException("Can't index a null entity");
 	}
 
@@ -137,8 +137,8 @@ public class DefaultIndexerService implements IndexerService {
 
 				SemiIndex semiIndex = indexingPipeline.processObject(entity);
 
-				for (Entry<IndexObjectDto, Map<Term,PostingMetadata>> semiIndexEntry: semiIndex.getSemiIndexMap().entrySet()) {
-					IndexObjectDto current = semiIndexEntry.getKey();
+				for (Entry<IndexObject, Map<Term,PostingMetadata>> semiIndexEntry: semiIndex.getSemiIndexMap().entrySet()) {
+					IndexObject current = semiIndexEntry.getKey();
 
 					IndexId currentIndexId = current.getIndexId();
 					MasterAndInvertedIndexWriter writer ;
@@ -180,7 +180,7 @@ public class DefaultIndexerService implements IndexerService {
 
 		try {
 			for (Object entity: entities) {	
-				IndexObjectDto indexObjectDto = new IndexObjectDto(entity);
+				IndexObject indexObjectDto = new IndexObject(entity);
 				indexWriter.delete(new ObjectKey(indexObjectDto.getClass(), indexObjectDto.getId()));
 			}
 		} finally {
@@ -189,20 +189,20 @@ public class DefaultIndexerService implements IndexerService {
 	}
 
 	@Override
-	public void bulkDtoCreate(List<IndexObjectDto> indexObjectDto) throws IndexObjectException {
+	public void bulkDtoCreate(List<IndexObject> indexObjectDto) throws IndexObjectException {
 		List<Object> entities = SearchLibrary.convertDtoListToEntityList(indexObjectDto);
 
 		bulkCreate(entities);
 	}
 
 	@Override
-	public void bulkDtoCreateOrUpdate(List<IndexObjectDto> indexObjectDto) throws IndexObjectException {
+	public void bulkDtoCreateOrUpdate(List<IndexObject> indexObjectDto) throws IndexObjectException {
 		bulkDtoDelete(indexObjectDto);
 		bulkDtoCreate(indexObjectDto);
 	}
 
 	@Override
-	public void bulkDtoDelete(List<IndexObjectDto> indexObjectDto) throws IndexObjectException {
+	public void bulkDtoDelete(List<IndexObject> indexObjectDto) throws IndexObjectException {
 		List<Object> entities = SearchLibrary.convertDtoListToEntityList(indexObjectDto);		
 		bulkDelete(entities);
 	}
@@ -210,7 +210,7 @@ public class DefaultIndexerService implements IndexerService {
 
 
 	@Override
-	public void bulkDtoUpdate(List<IndexObjectDto> indexObjectDto) throws IndexObjectException {
+	public void bulkDtoUpdate(List<IndexObject> indexObjectDto) throws IndexObjectException {
 		List<Object> entities = SearchLibrary.convertDtoListToEntityList(indexObjectDto);		
 		bulkUpdate(entities);
 	}

@@ -22,7 +22,7 @@ package com.jklas.search.indexer;
 import java.util.List;
 
 import com.jklas.search.exception.IndexObjectException;
-import com.jklas.search.index.dto.IndexObjectDto;
+import com.jklas.search.index.dto.IndexObject;
 
 /**
  * Interfaz para el servicio de indexación de objetos.
@@ -38,26 +38,26 @@ import com.jklas.search.index.dto.IndexObjectDto;
 public interface IndexerService {
 	
 	public void create(Object entity) throws IndexObjectException;
-	public void create(IndexObjectDto indexObjectDto) throws IndexObjectException;	
+	public void create(IndexObject indexObjectDto) throws IndexObjectException;	
 	
 	public void bulkCreate(List<?> entity) throws IndexObjectException;
-	public void bulkDtoCreate(List<IndexObjectDto> indexObjectDto) throws IndexObjectException;
+	public void bulkDtoCreate(List<IndexObject> indexObjectDto) throws IndexObjectException;
 	
 	public void delete(Object entity) throws IndexObjectException;
-	public void delete(IndexObjectDto indexObjectDto) throws IndexObjectException;
+	public void delete(IndexObject indexObjectDto) throws IndexObjectException;
 	
 	public void bulkDelete(List<?> entities) throws IndexObjectException;
-	public void bulkDtoDelete(List<IndexObjectDto> indexObjectDtos) throws IndexObjectException;
+	public void bulkDtoDelete(List<IndexObject> indexObjectDtos) throws IndexObjectException;
 	
 	public void update(Object entities) throws IndexObjectException;	
-	public void update(IndexObjectDto indexObjectDtos) throws IndexObjectException;
+	public void update(IndexObject indexObjectDtos) throws IndexObjectException;
 	
 	public void bulkUpdate(List<?> entities) throws IndexObjectException;
-	public void bulkDtoUpdate(List<IndexObjectDto> indexObjectDtos) throws IndexObjectException;
+	public void bulkDtoUpdate(List<IndexObject> indexObjectDtos) throws IndexObjectException;
 	
 	public void createOrUpdate(Object entity) throws IndexObjectException;
-	public void createOrUpdate(IndexObjectDto indexObjectDto) throws IndexObjectException;
+	public void createOrUpdate(IndexObject indexObjectDto) throws IndexObjectException;
 	
 	public void bulkCreateOrUpdate(List<?> entity) throws IndexObjectException;
-	public void bulkDtoCreateOrUpdate(List<IndexObjectDto> indexObjectDto) throws IndexObjectException;
+	public void bulkDtoCreateOrUpdate(List<IndexObject> indexObjectDto) throws IndexObjectException;
 }

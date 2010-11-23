@@ -26,7 +26,7 @@ import org.junit.Test;
 import com.jklas.search.SearchEngine;
 import com.jklas.search.exception.IndexObjectException;
 import com.jklas.search.exception.SearchEngineMappingException;
-import com.jklas.search.index.dto.IndexObjectDto;
+import com.jklas.search.index.dto.IndexObject;
 import com.jklas.search.index.memory.MemoryIndex;
 import com.jklas.search.index.memory.MemoryIndexWriterFactory;
 import com.jklas.search.indexer.online.OnlineIndexer;
@@ -51,7 +51,7 @@ public class OnlineIndexerTest {
 	SingleAttributeEntity entity = new Utils.SingleAttributeEntity(0,"Juli�n");
 	Utils.configureAndMap(entity);
 
-	onlineIndexer.create(new IndexObjectDto(entity,0));		
+	onlineIndexer.create(new IndexObject(entity,0));		
 	
 	Assert.assertTrue(true);
     }

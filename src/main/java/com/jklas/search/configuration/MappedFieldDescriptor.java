@@ -23,6 +23,7 @@ import java.lang.reflect.Field;
 
 import com.jklas.search.annotations.IndexReference;
 import com.jklas.search.engine.Language;
+import com.jklas.search.engine.operations.StopWordProvider;
 import com.jklas.search.engine.processor.ObjectTextProcessor;
 import com.jklas.search.engine.stemming.StemType;
 import com.jklas.search.engine.stemming.StemmerStrategy;
@@ -62,6 +63,8 @@ public class MappedFieldDescriptor {
 
 	private ObjectTextProcessor textProcessor;
 
+	private StopWordProvider stopWordProvider;
+	
 	private boolean isSearchCollection;
 
 	private IndexReference referenceType ;
@@ -186,5 +189,13 @@ public class MappedFieldDescriptor {
 
 	public boolean isSearchContained() {
 		return isSearchContained;
+	}
+	
+	public StopWordProvider getStopWordProvider() {
+		return stopWordProvider;
+	}
+	
+	public void setStopWordProvider(StopWordProvider stopWordProvider) {
+		this.stopWordProvider = stopWordProvider;
 	}
 }

@@ -22,7 +22,7 @@ package com.jklas.search.indexer.online;
 import java.util.List;
 
 import com.jklas.search.exception.IndexObjectException;
-import com.jklas.search.index.dto.IndexObjectDto;
+import com.jklas.search.index.dto.IndexObject;
 import com.jklas.search.indexer.IndexerService;
 import com.jklas.search.util.SearchLibrary;
 
@@ -34,7 +34,7 @@ public class OnlineIndexer implements IndexerService {
 		this.indexerService = indexerService;
 	}
 
-	public void create(IndexObjectDto indexObjectDto) throws IndexObjectException {
+	public void create(IndexObject indexObjectDto) throws IndexObjectException {
 		indexerService.create(indexObjectDto);
 	}
 
@@ -49,7 +49,7 @@ public class OnlineIndexer implements IndexerService {
 	}
 
 	@Override
-	public void createOrUpdate(IndexObjectDto indexObjectDto) throws IndexObjectException {
+	public void createOrUpdate(IndexObject indexObjectDto) throws IndexObjectException {
 		indexerService.createOrUpdate(indexObjectDto);
 	}
 
@@ -59,7 +59,7 @@ public class OnlineIndexer implements IndexerService {
 	}
 
 	@Override
-	public void delete(IndexObjectDto indexObjectDto) throws IndexObjectException {
+	public void delete(IndexObject indexObjectDto) throws IndexObjectException {
 		indexerService.delete(indexObjectDto);
 	}
 
@@ -69,7 +69,7 @@ public class OnlineIndexer implements IndexerService {
 	}
 
 	@Override
-	public void update(IndexObjectDto indexObjectDto) throws IndexObjectException {
+	public void update(IndexObject indexObjectDto) throws IndexObjectException {
 		indexerService.update(indexObjectDto);
 	}
 
@@ -95,22 +95,22 @@ public class OnlineIndexer implements IndexerService {
 	}
 
 	@Override
-	public void bulkDtoCreate(List<IndexObjectDto> indexObjectDto) throws IndexObjectException {
+	public void bulkDtoCreate(List<IndexObject> indexObjectDto) throws IndexObjectException {
 		bulkCreate(SearchLibrary.convertDtoListToEntityList(indexObjectDto));
 	}
 
 	@Override
-	public void bulkDtoCreateOrUpdate(List<IndexObjectDto> indexObjectDto) throws IndexObjectException {
+	public void bulkDtoCreateOrUpdate(List<IndexObject> indexObjectDto) throws IndexObjectException {
 		bulkCreateOrUpdate(SearchLibrary.convertDtoListToEntityList(indexObjectDto));
 	}
 
 	@Override
-	public void bulkDtoDelete(List<IndexObjectDto> indexObjectDto) throws IndexObjectException {
+	public void bulkDtoDelete(List<IndexObject> indexObjectDto) throws IndexObjectException {
 		bulkDelete(SearchLibrary.convertDtoListToEntityList(indexObjectDto));
 	}
 
 	@Override
-	public void bulkDtoUpdate(List<IndexObjectDto> indexObjectDto) throws IndexObjectException {
+	public void bulkDtoUpdate(List<IndexObject> indexObjectDto) throws IndexObjectException {
 		bulkUpdate(SearchLibrary.convertDtoListToEntityList(indexObjectDto));
 	}
 

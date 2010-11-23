@@ -17,18 +17,19 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package com.jklas.search.engine.operations;
-
-import java.util.List;
+package com.jklas.search.engine.stemming;
 
 import com.jklas.search.engine.Language;
-import com.jklas.search.index.Term;
-import com.jklas.search.util.TextLibrary;
+import com.jklas.search.engine.stemming.snowball.SpanishNumberStemmer;
+import com.jklas.search.engine.stemming.snowball.SpanishStemmer;
 
-public class NoWordCleaner {
-
-	public void deleteStopWords(List<Term> tokens, Language language) {
-		TextLibrary.cleanStopWords(tokens, language.getIdentifier());
-	} 
+public class SpanishSnowballStemmingStrategy implements StemmerStrategy {
 	
+	@Override
+	public Stemmer getStemmer(Language language, StemType stemType) {
+		if(stemType == StemType.FULL_STEM)
+			return new SpanishStemmer();
+		else 
+			return new SpanishNumberStemmer();
+	}
 }

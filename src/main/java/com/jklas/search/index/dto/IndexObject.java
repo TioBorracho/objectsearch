@@ -27,7 +27,7 @@ import com.jklas.search.configuration.SearchMapping;
 import com.jklas.search.exception.SearchEngineMappingException;
 import com.jklas.search.index.IndexId;
 
-public class IndexObjectDto implements Serializable {
+public class IndexObject implements Serializable {
 
 	private static final long serialVersionUID = -7985869692765549281L;
 
@@ -43,7 +43,7 @@ public class IndexObjectDto implements Serializable {
 
 	private IndexId indexId = IndexId.getDefaultIndexId();
 
-	public IndexObjectDto(Object entity) {
+	public IndexObject(Object entity) {
 		SearchConfiguration configuration = SearchEngine.getInstance().getConfiguration();
 
 		if(!SearchEngine.getInstance().isConfigured()) throw new IllegalStateException("Can't figure out object id when there's no active configuration");
@@ -64,7 +64,7 @@ public class IndexObjectDto implements Serializable {
 		this.entity = entity;
 	}
 
-	public IndexObjectDto(Object entity, Serializable id) {
+	public IndexObject(Object entity, Serializable id) {
 		this.id = id;
 		this.entity = entity;
 	}
@@ -108,7 +108,7 @@ public class IndexObjectDto implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		IndexObjectDto other = (IndexObjectDto) obj;
+		IndexObject other = (IndexObject) obj;
 		if (entity.getClass() == null) {
 			if (other.entity.getClass() != null)
 				return false;

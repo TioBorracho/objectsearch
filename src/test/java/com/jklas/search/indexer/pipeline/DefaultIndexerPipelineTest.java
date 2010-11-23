@@ -24,9 +24,11 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -34,6 +36,7 @@ import org.junit.Test;
 import com.jklas.search.annotations.IndexReference;
 import com.jklas.search.annotations.Indexable;
 import com.jklas.search.annotations.IndexableContainer;
+import com.jklas.search.annotations.LangId;
 import com.jklas.search.annotations.SearchCollection;
 import com.jklas.search.annotations.SearchContained;
 import com.jklas.search.annotations.SearchField;
@@ -43,6 +46,9 @@ import com.jklas.search.annotations.SearchSort;
 import com.jklas.search.annotations.Stemming;
 import com.jklas.search.annotations.TextProcessor;
 import com.jklas.search.configuration.AnnotationConfigurationMapper;
+import com.jklas.search.engine.Language;
+import com.jklas.search.engine.operations.StopWordCleaner;
+import com.jklas.search.engine.operations.StopWordProvider;
 import com.jklas.search.engine.processor.DefaultObjectTextProcessor;
 import com.jklas.search.engine.processor.NullProcessor;
 import com.jklas.search.engine.processor.OneTermTextProcessor;
@@ -54,7 +60,7 @@ import com.jklas.search.exception.IndexObjectException;
 import com.jklas.search.exception.SearchEngineMappingException;
 import com.jklas.search.index.PostingMetadata;
 import com.jklas.search.index.Term;
-import com.jklas.search.index.dto.IndexObjectDto;
+import com.jklas.search.index.dto.IndexObject;
 import com.jklas.search.util.Utils;
 import com.jklas.search.util.Utils.SingleAttributeEntity;
 
@@ -63,7 +69,7 @@ public class DefaultIndexerPipelineTest {
 	@SuppressWarnings("unused")
 	
 	@Indexable
-	private class Dummy {@SearchId public Serializable id = IndexObjectDto.NO_ID;}
+	private class Dummy {@SearchId public Serializable id = IndexObject.NO_ID;}
 	
 	@Test
 	public void testEmptyObjectProducesZeroObjectEntries() throws IndexObjectException, SearchEngineMappingException {
@@ -74,7 +80,7 @@ public class DefaultIndexerPipelineTest {
 		
 		DefaultIndexingPipeline pipeline = new DefaultIndexingPipeline();
 		
-		IndexObjectDto dto =  new IndexObjectDto(dummy, IndexObjectDto.NO_ID);
+		IndexObject dto =  new IndexObject(dummy, IndexObject.NO_ID);
 		
 		SemiIndex semiIndex = pipeline.processObject(dummy);
 		
@@ -95,7 +101,7 @@ public class DefaultIndexerPipelineTest {
 		
 		SemiIndex semiIndex = pipeline.processObject(notIndexableEntity);
 		
-		IndexObjectDto dto =  new IndexObjectDto(notIndexableEntity, IndexObjectDto.NO_ID);
+		IndexObject dto =  new IndexObject(notIndexableEntity, IndexObject.NO_ID);
 		
 		Map<Term, PostingMetadata> objectEntries = semiIndex.getSemiIndexMap().get(dto);
 
@@ -128,7 +134,7 @@ public class DefaultIndexerPipelineTest {
 		
 		SemiIndex semiIndex = pipeline.processObject(dummy);
 		
-		IndexObjectDto dto =  new IndexObjectDto(dummy);
+		IndexObject dto =  new IndexObject(dummy);
 		
 		Map<Term, PostingMetadata> objectEntries = semiIndex.getSemiIndexMap().get(dto);
 		
@@ -153,7 +159,7 @@ public class DefaultIndexerPipelineTest {
 		
 		SemiIndex semiIndex = pipeline.processObject(dummy);
 		
-		IndexObjectDto dto =  new IndexObjectDto(dummy);
+		IndexObject dto =  new IndexObject(dummy);
 		
 		Map<Term, PostingMetadata> objectEntries = semiIndex.getSemiIndexMap().get(dto);
 		
@@ -178,7 +184,7 @@ public class DefaultIndexerPipelineTest {
 		
 		SemiIndex semiIndex = pipeline.processObject(dummy);
 		
-		IndexObjectDto dto =  new IndexObjectDto(dummy);
+		IndexObject dto =  new IndexObject(dummy);
 		
 		Map<Term, PostingMetadata> termPostingMap = semiIndex.getSemiIndexMap().get(dto);
 		
@@ -203,7 +209,7 @@ public class DefaultIndexerPipelineTest {
 		
 		SemiIndex semiIndex = pipeline.processObject(dummy);
 		
-		IndexObjectDto dto =  new IndexObjectDto(dummy);
+		IndexObject dto =  new IndexObject(dummy);
 		
 		Map<Term, PostingMetadata> objectEntries = semiIndex.getSemiIndexMap().get(dto);
 
@@ -223,7 +229,7 @@ public class DefaultIndexerPipelineTest {
 		
 		SemiIndex semiIndex = pipeline.processObject(dummy);
 		
-		IndexObjectDto dto =  new IndexObjectDto(dummy);
+		IndexObject dto =  new IndexObject(dummy);
 		
 		Map<Term, PostingMetadata> objectEntries = semiIndex.getSemiIndexMap().get(dto);
 		
@@ -243,7 +249,7 @@ public class DefaultIndexerPipelineTest {
 		
 		SemiIndex semiIndex = pipeline.processObject(dummy);
 		
-		IndexObjectDto dto =  new IndexObjectDto(dummy);
+		IndexObject dto =  new IndexObject(dummy);
 		
 		Map<Term, PostingMetadata> termPostingMap = semiIndex.getSemiIndexMap().get(dto);
 		
@@ -268,7 +274,7 @@ public class DefaultIndexerPipelineTest {
 		
 		SemiIndex semiIndex = pipeline.processObject(dummy);
 		
-		IndexObjectDto dto =  new IndexObjectDto(dummy);
+		IndexObject dto =  new IndexObject(dummy);
 		
 		Map<Term, PostingMetadata> termPostingMap = semiIndex.getSemiIndexMap().get(dto);
 		
@@ -307,7 +313,7 @@ public class DefaultIndexerPipelineTest {
 				
 		SemiIndex semiIndex = pipeline.processObject(dummy);
 		
-		IndexObjectDto dto =  new IndexObjectDto(dummy);
+		IndexObject dto =  new IndexObject(dummy);
 		
 		Map<Term, PostingMetadata> termPostingMap = semiIndex.getSemiIndexMap().get(dto);
 		
@@ -347,7 +353,7 @@ public class DefaultIndexerPipelineTest {
 				
 		SemiIndex semiIndex = pipeline.processObject(dummy);
 		
-		IndexObjectDto dto =  new IndexObjectDto(dummy);
+		IndexObject dto =  new IndexObject(dummy);
 		
 		Map<Term, PostingMetadata> termPostingMap = semiIndex.getSemiIndexMap().get(dto);
 		
@@ -387,7 +393,7 @@ public class DefaultIndexerPipelineTest {
 				
 		SemiIndex semiIndex = pipeline.processObject(dummy);
 		
-		IndexObjectDto dto =  new IndexObjectDto(dummy);
+		IndexObject dto =  new IndexObject(dummy);
 		
 		Map<Term, PostingMetadata> termPostingMap = semiIndex.getSemiIndexMap().get(dto);
 		
@@ -429,7 +435,7 @@ public class DefaultIndexerPipelineTest {
 					
 		SemiIndex semiIndex = pipeline.processObject(dummy);
 		
-		IndexObjectDto dto =  new IndexObjectDto(dummy);
+		IndexObject dto =  new IndexObject(dummy);
 		
 		Map<Term, PostingMetadata> termPostingMap = semiIndex.getSemiIndexMap().get(dto);
 		
@@ -479,7 +485,7 @@ public class DefaultIndexerPipelineTest {
 		
 		SemiIndex semiIndex = pipeline.processObject(dummy);
 		
-		IndexObjectDto dto =  new IndexObjectDto(dummy);
+		IndexObject dto =  new IndexObject(dummy);
 		
 		Map<Term, PostingMetadata> termPostingMap = semiIndex.getSemiIndexMap().get(dto);
 		
@@ -535,7 +541,7 @@ public class DefaultIndexerPipelineTest {
 		
 		SemiIndex semiIndex = pipeline.processObject(son);
 		
-		IndexObjectDto dto =  new IndexObjectDto(son);
+		IndexObject dto =  new IndexObject(son);
 		
 		Map<Term, PostingMetadata> termPostingMap = semiIndex.getSemiIndexMap().get(dto);
 
@@ -601,19 +607,19 @@ public class DefaultIndexerPipelineTest {
 		
 		SemiIndex semiIndex = pipeline.processObject(container);
 		
-		IndexObjectDto dto =  new IndexObjectDto(list1contained);		
+		IndexObject dto =  new IndexObject(list1contained);		
 		Map<Term, PostingMetadata> termPostingMap = semiIndex.getSemiIndexMap().get(dto);		
 		Assert.assertEquals( 1, termPostingMap.size() );
 		
-		dto = new IndexObjectDto(list2contained);		
+		dto = new IndexObject(list2contained);		
 		termPostingMap = semiIndex.getSemiIndexMap().get(dto);		
 		Assert.assertEquals( 1, termPostingMap.size() );
 		
-		dto = new IndexObjectDto(list3contained);		
+		dto = new IndexObject(list3contained);		
 		termPostingMap = semiIndex.getSemiIndexMap().get(dto);		
 		Assert.assertEquals( 1, termPostingMap.size() );
 		
-		dto = new IndexObjectDto(container, IndexObjectDto.NO_ID);		
+		dto = new IndexObject(container, IndexObject.NO_ID);		
 		Assert.assertNull(semiIndex.getSemiIndexMap().get(dto));
 		
 	}
@@ -645,19 +651,19 @@ public class DefaultIndexerPipelineTest {
 		
 		SemiIndex semiIndex = pipeline.processObject(container);
 		
-		IndexObjectDto dto =  new IndexObjectDto(list1contained);		
+		IndexObject dto =  new IndexObject(list1contained);		
 		Map<Term, PostingMetadata> termPostingMap = semiIndex.getSemiIndexMap().get(dto);		
 		Assert.assertNull(termPostingMap);
 		
-		dto = new IndexObjectDto(list2contained);		
+		dto = new IndexObject(list2contained);		
 		termPostingMap = semiIndex.getSemiIndexMap().get(dto);		
 		Assert.assertNull(termPostingMap);
 		
-		dto = new IndexObjectDto(list3contained);		
+		dto = new IndexObject(list3contained);		
 		termPostingMap = semiIndex.getSemiIndexMap().get(dto);		
 		Assert.assertNull(termPostingMap);
 		
-		dto = new IndexObjectDto(container);
+		dto = new IndexObject(container);
 		termPostingMap = semiIndex.getSemiIndexMap().get(dto);
 		Assert.assertEquals( 3, termPostingMap.size() );	
 	}
@@ -689,19 +695,19 @@ public class DefaultIndexerPipelineTest {
 		
 		SemiIndex semiIndex = pipeline.processObject(container);
 		
-		IndexObjectDto dto =  new IndexObjectDto(list1contained);		
+		IndexObject dto =  new IndexObject(list1contained);		
 		Map<Term, PostingMetadata> termPostingMap = semiIndex.getSemiIndexMap().get(dto);		
 		Assert.assertEquals( 1, termPostingMap.size() );
 		
-		dto = new IndexObjectDto(list2contained);		
+		dto = new IndexObject(list2contained);		
 		termPostingMap = semiIndex.getSemiIndexMap().get(dto);		
 		Assert.assertEquals( 1, termPostingMap.size() );
 		
-		dto = new IndexObjectDto(list3contained);		
+		dto = new IndexObject(list3contained);		
 		termPostingMap = semiIndex.getSemiIndexMap().get(dto);		
 		Assert.assertEquals( 1, termPostingMap.size() );
 		
-		dto = new IndexObjectDto(container);
+		dto = new IndexObject(container);
 		termPostingMap = semiIndex.getSemiIndexMap().get(dto);
 		Assert.assertEquals( 3, termPostingMap.size() );	
 	}
@@ -729,7 +735,7 @@ public class DefaultIndexerPipelineTest {
 		
 		int numberOfReferences = 0;
 		
-		for (Map.Entry<IndexObjectDto, Map<Term, PostingMetadata>> entry : semiIndex.getSemiIndexMap().entrySet()) {			
+		for (Map.Entry<IndexObject, Map<Term, PostingMetadata>> entry : semiIndex.getSemiIndexMap().entrySet()) {			
 			Class<?> currentEntryEntityClass = entry.getKey().getEntity().getClass();
 			
 			if(entry.getValue().containsKey(new Term("SELF"))) {
@@ -759,5 +765,57 @@ public class DefaultIndexerPipelineTest {
 		}
 		
 		Assert.assertEquals(4, numberOfReferences);
+	}
+	
+	
+	private static class HardcodedProvider implements StopWordProvider {
+		@Override
+		public void provideStopWords(Language language, StopWordCleaner cleaner) {
+			Set<Term> stopWords = new HashSet<Term>();
+			if(language.equals(new Language("es"))) {
+				stopWords.add(new Term("De"));
+			} else {
+				stopWords.add(new Term("Is"));
+				stopWords.add(new Term("Of"));
+			}
+			cleaner.setStopWords(language, stopWords);
+		}
+		
+	}
+	
+	@SuppressWarnings("unused")
+	@Indexable @LangId("es") @TextProcessor(value=DefaultObjectTextProcessor.class)
+	private class DummyWithStopWords {
+		@SearchId
+		private int id = 1;
+
+		@SearchField 
+		private String notToClean = "nothing to do here";
+		
+		@SearchField @TextProcessor(value=DefaultObjectTextProcessor.class,	stopWordProvider=HardcodedProvider.class) @LangId("en")
+		private String attribute = "This is full of stop words";
+	}
+
+	@Test
+	public void StopWordsAreCleaned() throws SearchEngineMappingException, IndexObjectException {
+
+		DummyWithStopWords entity = new DummyWithStopWords();
+		
+		AnnotationConfigurationMapper.configureAndMap(entity,true);
+		
+		DefaultIndexingPipeline pipeline = new DefaultIndexingPipeline();
+		
+		SemiIndex semiIndex = pipeline.processObject(entity);
+		
+		IndexObject dto =  new IndexObject(entity);
+		
+		Map<Term, PostingMetadata> termPostingMap = semiIndex.getSemiIndexMap().get(dto);
+
+		Assert.assertTrue( termPostingMap.containsKey(new Term("This")) );
+		Assert.assertFalse( termPostingMap.containsKey(new Term("is")) );
+		Assert.assertTrue( termPostingMap.containsKey(new Term("full")) );
+		Assert.assertFalse( termPostingMap.containsKey(new Term("of")) );
+		Assert.assertTrue( termPostingMap.containsKey(new Term("stop")) );
+		Assert.assertTrue( termPostingMap.containsKey(new Term("words")) );
 	}
 }

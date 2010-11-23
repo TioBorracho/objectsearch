@@ -46,7 +46,7 @@ public class Language {
 	}
 	
 	private Language() {
-		identifier = null;
+		identifier = "";
 		idToLangMap.put(UNKOWN_LANGUAGE_IDENTIFIER, UNKOWN_LANGUAGE);
 	}
 	

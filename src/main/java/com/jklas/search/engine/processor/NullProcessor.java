@@ -20,9 +20,12 @@
 package com.jklas.search.engine.processor;
 
 import java.util.List;
+import java.util.Set;
 
 import com.jklas.search.configuration.MappedFieldDescriptor;
 import com.jklas.search.engine.Language;
+import com.jklas.search.engine.NullStopWordProvider;
+import com.jklas.search.engine.operations.StopWordCleaner;
 import com.jklas.search.index.Term;
 
 public class NullProcessor implements ObjectTextProcessor, QueryTextProcessor {
@@ -35,5 +38,24 @@ public class NullProcessor implements ObjectTextProcessor, QueryTextProcessor {
 	@Override
 	public List<Term> processText(String text, Language language) {
 		throw new RuntimeException("The null QueryTextProcessor shouldn't be used!");
+	}
+
+
+	@Override
+	public StopWordCleaner getStopWordCleaner() {
+		return new StopWordCleaner() {
+			
+			@Override
+			public void setStopWords(Language language, Set<Term> stopWords) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void deleteStopWords(Language language, List<Term> tokens) {
+				// TODO Auto-generated method stub
+				
+			}
+		};
 	}
 }

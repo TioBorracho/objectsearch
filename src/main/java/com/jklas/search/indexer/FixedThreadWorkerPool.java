@@ -26,7 +26,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.jklas.search.index.dto.IndexObjectDto;
+import com.jklas.search.index.dto.IndexObject;
 import com.jklas.search.indexer.semionline.SemiOnlineWorker;
 import com.jklas.search.indexer.semionline.SemiOnlineWorkerPool;
 import com.jklas.search.util.Pair;
@@ -37,7 +37,7 @@ public class FixedThreadWorkerPool implements SemiOnlineWorkerPool {
 
 	private final List<SemiOnlineWorker> singleWorkerList;
 
-	private final BlockingQueue<Pair<IndexerAction, IndexObjectDto>> workQueue = new LinkedBlockingQueue<Pair<IndexerAction, IndexObjectDto>>();
+	private final BlockingQueue<Pair<IndexerAction, IndexObject>> workQueue = new LinkedBlockingQueue<Pair<IndexerAction, IndexObject>>();
 
 	private AtomicInteger remainingJobs ;
 
@@ -80,15 +80,15 @@ public class FixedThreadWorkerPool implements SemiOnlineWorkerPool {
 	}
 
 	@Override
-	public void newTask(IndexerAction indexerAction, IndexObjectDto objectToIndex) {
+	public void newTask(IndexerAction indexerAction, IndexObject objectToIndex) {
 		if(!isClosed) {			
-			workQueue.add(new Pair<IndexerAction,IndexObjectDto>(indexerAction,objectToIndex));
+			workQueue.add(new Pair<IndexerAction,IndexObject>(indexerAction,objectToIndex));
 		}
 	}
 
 	@Override
-	public void newTask(List<Pair<IndexerAction, IndexObjectDto>> objectsToIndex) {
-		for (Pair<IndexerAction, IndexObjectDto> pair : objectsToIndex) {
+	public void newTask(List<Pair<IndexerAction, IndexObject>> objectsToIndex) {
+		for (Pair<IndexerAction, IndexObject> pair : objectsToIndex) {
 			newTask(pair.getFirst(), pair.getSecond());
 		}
 	}

@@ -22,7 +22,7 @@ package com.jklas.search.indexer.semionline;
 import java.util.concurrent.BlockingQueue;
 
 import com.jklas.search.exception.IndexObjectException;
-import com.jklas.search.index.dto.IndexObjectDto;
+import com.jklas.search.index.dto.IndexObject;
 import com.jklas.search.indexer.IndexerAction;
 import com.jklas.search.indexer.IndexerService;
 import com.jklas.search.util.Pair;
@@ -31,7 +31,7 @@ public class SemiOnlineWorker implements Runnable {
 
 	private final IndexerService indexerService;
 
-	private final BlockingQueue<Pair<IndexerAction, IndexObjectDto>> workQueue;
+	private final BlockingQueue<Pair<IndexerAction, IndexObject>> workQueue;
 
 	private final SemiOnlineWorkerPool workerPool;
 
@@ -41,13 +41,13 @@ public class SemiOnlineWorker implements Runnable {
 
 	private boolean stopWhenQueueEmpties = false;
 
-	public SemiOnlineWorker(SemiOnlineWorkerPool workerPool, BlockingQueue<Pair<IndexerAction, IndexObjectDto>> workQueue, IndexerService indexerService) {
+	public SemiOnlineWorker(SemiOnlineWorkerPool workerPool, BlockingQueue<Pair<IndexerAction, IndexObject>> workQueue, IndexerService indexerService) {
 		this.indexerService = indexerService;
 		this.workQueue = workQueue;
 		this.workerPool = workerPool;
 	}
 
-	private void work(IndexerAction action, IndexObjectDto indexObjectDto) {
+	private void work(IndexerAction action, IndexObject indexObjectDto) {
 		try {
 			action.execute(indexerService, indexObjectDto);
 			okCount++;
@@ -59,7 +59,7 @@ public class SemiOnlineWorker implements Runnable {
 	@Override
 	public void run() {
 		while(!stopped ) {
-			Pair<IndexerAction, IndexObjectDto> task ;
+			Pair<IndexerAction, IndexObject> task ;
 			try {
 				if(stopWhenQueueEmpties && workQueue.isEmpty()) {
 					return;

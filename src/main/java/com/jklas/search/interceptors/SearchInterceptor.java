@@ -20,7 +20,7 @@
 package com.jklas.search.interceptors;
 
 import com.jklas.search.exception.IndexObjectException;
-import com.jklas.search.index.dto.IndexObjectDto;
+import com.jklas.search.index.dto.IndexObject;
 import com.jklas.search.indexer.IndexerService;
 
 /**
@@ -49,7 +49,7 @@ public class SearchInterceptor {
 		return indexerService;
 	}
 	
-	public void createOrUpdate(IndexObjectDto indexObjectDto) throws IndexObjectException {
+	public void createOrUpdate(IndexObject indexObjectDto) throws IndexObjectException {
 		try {
 			indexerService.createOrUpdate(indexObjectDto);
 		} catch (IndexObjectException e) {
@@ -57,7 +57,7 @@ public class SearchInterceptor {
 		}		
 	}
 		
-	public void delete(IndexObjectDto indexObjectDto ) throws IndexObjectException {		
+	public void delete(IndexObject indexObjectDto ) throws IndexObjectException {		
 		try {
 			indexerService.delete(indexObjectDto);
 		} catch (IndexObjectException e) {
@@ -65,7 +65,7 @@ public class SearchInterceptor {
 		}
 	}
 
-	public void update(IndexObjectDto indexObjectDto) throws IndexObjectException {
+	public void update(IndexObject indexObjectDto) throws IndexObjectException {
 		try {
 			indexerService.update(indexObjectDto);
 		} catch (IndexObjectException e) {
@@ -73,7 +73,7 @@ public class SearchInterceptor {
 		}
 	}
 	
-	public void create(IndexObjectDto indexObjectDto) throws IndexObjectException {		
+	public void create(IndexObject indexObjectDto) throws IndexObjectException {		
 		try {
 			indexerService.create(indexObjectDto);
 		} catch (IndexObjectException e) {

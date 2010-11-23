@@ -21,6 +21,8 @@ package com.jklas.search.configuration;
 
 import java.lang.reflect.Field;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -37,12 +39,16 @@ import com.jklas.search.annotations.SearchSort;
 import com.jklas.search.annotations.Stemming;
 import com.jklas.search.annotations.TextProcessor;
 import com.jklas.search.engine.Language;
+import com.jklas.search.engine.NullStopWordProvider;
+import com.jklas.search.engine.operations.StopWordCleaner;
+import com.jklas.search.engine.operations.StopWordProvider;
 import com.jklas.search.engine.processor.DefaultObjectTextProcessor;
 import com.jklas.search.engine.processor.OneTermTextProcessor;
 import com.jklas.search.engine.stemming.IdentityStemmerStrategy;
 import com.jklas.search.engine.stemming.StemType;
 import com.jklas.search.exception.SearchEngineException;
 import com.jklas.search.exception.SearchEngineMappingException;
+import com.jklas.search.index.Term;
 import com.jklas.search.indexer.IdentityTransform;
 
 public class AnnotationConfigurationTest {
@@ -446,4 +452,55 @@ public class AnnotationConfigurationTest {
 		Assert.assertEquals(DefaultObjectTextProcessor.class, currentConfiguration.getMapping(dummy).getFieldDescriptor(attribute2).getTextProcessor().getClass());
 	}
 	
+	private static class HardcodedProvider implements StopWordProvider {
+		@Override
+		public void provideStopWords(Language language, StopWordCleaner cleaner) {
+			Set<Term> stopWords = new HashSet<Term>();
+			if(language.getIdentifier().equals("es")) {
+				stopWords.add(new Term("De"));
+			} else {
+				stopWords.add(new Term("Is"));
+				stopWords.add(new Term("Of"));
+			}
+			cleaner.setStopWords(language, stopWords);
+		}
+		
+	}
+	
+	@SuppressWarnings("unused")
+	@Indexable @LangId("en")
+	@TextProcessor(DefaultObjectTextProcessor.class)
+	private class DummyWithStopWords {
+		@SearchId
+		private int id = 1;
+		
+		@SearchField
+		private String attribute = "This is full of stop words";
+		
+		@SearchField @TextProcessor(value=DefaultObjectTextProcessor.class,
+				stopWordProvider=HardcodedProvider.class) @LangId("es")
+		private String overrided = "This is full of stop words";
+	}
+	
+	@Test
+	public void testProviderIsMappedAndOverrided() throws SecurityException, NoSuchFieldException, InstantiationException, IllegalAccessException, IllegalArgumentException, SearchEngineException {
+		SearchEngine.getInstance().reset();
+		
+		SearchConfiguration currentConfiguration = SearchEngine.getInstance().newConfiguration();
+		
+		AnnotationConfigurationMapper mapper = new AnnotationConfigurationMapper();
+
+		DummyWithStopWords dummy = new DummyWithStopWords ();
+		
+		applyMap(dummy, mapper);
+
+		Field attribute = DummyWithStopWords.class.getDeclaredField("attribute");
+
+		Field overrided = DummyWithStopWords.class.getDeclaredField("overrided");
+		
+		Assert.assertEquals(HardcodedProvider.class, currentConfiguration.getMapping(dummy).getFieldDescriptor(overrided).getStopWordProvider().getClass() );
+		
+		Assert.assertEquals(NullStopWordProvider.class, currentConfiguration.getMapping(dummy).getFieldDescriptor(attribute).getStopWordProvider().getClass() );
+	}
+
 }

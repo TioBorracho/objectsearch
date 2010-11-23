@@ -25,22 +25,45 @@ import java.util.List;
 
 import com.jklas.search.configuration.MappedFieldDescriptor;
 import com.jklas.search.engine.Language;
-import com.jklas.search.engine.operations.NoWordCleaner;
+import com.jklas.search.engine.operations.MultiLanguageStopWordCleaner;
 import com.jklas.search.engine.operations.SpaceTokenizer;
 import com.jklas.search.engine.operations.StemmingOperation;
+import com.jklas.search.engine.operations.StopWordCleaner;
+import com.jklas.search.engine.operations.Tokenizer;
 import com.jklas.search.engine.operations.UpperCaseNoSymbolTextNormalizer;
+import com.jklas.search.engine.stemming.IdentityStemmerStrategy;
+import com.jklas.search.engine.stemming.StemType;
+import com.jklas.search.engine.stemming.StemmerStrategy;
 import com.jklas.search.index.Term;
 
 public class DefaultObjectTextProcessor implements ObjectTextProcessor {
 
-	private static final NoWordCleaner noWordProcessor = new NoWordCleaner();
+	private StopWordCleaner stopWordProcessor ;
 
-	private static final UpperCaseNoSymbolTextNormalizer textNormalizer = new UpperCaseNoSymbolTextNormalizer("+");
+	private UpperCaseNoSymbolTextNormalizer textNormalizer ;
+	
+	private Tokenizer tokenizer = new SpaceTokenizer();
 
-	private static final SpaceTokenizer tokenizer = new SpaceTokenizer();
+	private StemmingOperation stemmingOperation = new StemmingOperation();
 
-	private static final StemmingOperation stemmingOperation = new StemmingOperation();
+	public DefaultObjectTextProcessor() {
+		this(new MultiLanguageStopWordCleaner(), new UpperCaseNoSymbolTextNormalizer("+"), 
+				new SpaceTokenizer(), new StemmingOperation(), 
+				new IdentityStemmerStrategy(), StemType.NO_STEM);
+	}
 
+	public DefaultObjectTextProcessor(StopWordCleaner cleaner,
+			UpperCaseNoSymbolTextNormalizer normalizer,
+			Tokenizer tokenizer,
+			StemmingOperation operation,
+			StemmerStrategy stemmerStrategy, StemType stemType)
+	{
+		setStopWordProcessor(cleaner);
+		setTextNormalizer(normalizer);
+		setTokenizer(tokenizer);
+		setStemmingOperation(operation);
+	}
+	
 	public List<Term> processField(String extractedText, MappedFieldDescriptor fieldDescriptor) {
 
 		Language language = fieldDescriptor.getLanguage();
@@ -49,9 +72,9 @@ public class DefaultObjectTextProcessor implements ObjectTextProcessor {
 
 		List<Term> tokens = tokenizer.tokenize(normalizedText);
 
-		noWordProcessor.deleteStopWords(tokens, language);
+		stopWordProcessor.deleteStopWords(language, tokens);
 
-		if(tokens.size() == 0) Collections.emptyList();
+		if(tokens.size() == 0) return Collections.emptyList();
 
 		List<Term> fieldTokens = new ArrayList<Term>();
 
@@ -65,4 +88,26 @@ public class DefaultObjectTextProcessor implements ObjectTextProcessor {
 		return fieldTokens;		
 	}
 
+	public void setStemmingOperation(StemmingOperation stemmingOperation) {
+		this.stemmingOperation = stemmingOperation;
+	}
+	
+	public void setTextNormalizer(UpperCaseNoSymbolTextNormalizer textNormalizer) {
+		this.textNormalizer = textNormalizer;
+	}
+	
+	public void setTokenizer(Tokenizer tokenizer) {
+		this.tokenizer = tokenizer;
+	}
+	
+	public void setStopWordProcessor(StopWordCleaner stopWordProcessor) {
+		this.stopWordProcessor = stopWordProcessor;
+	}
+
+	@Override
+	public StopWordCleaner getStopWordCleaner() {
+		return stopWordProcessor;
+	}
+	
+	
 }

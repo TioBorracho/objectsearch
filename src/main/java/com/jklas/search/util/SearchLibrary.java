@@ -25,7 +25,7 @@ import java.util.List;
 import com.jklas.search.SearchEngine;
 import com.jklas.search.configuration.AnnotationConfigurationMapper;
 import com.jklas.search.exception.SearchEngineMappingException;
-import com.jklas.search.index.dto.IndexObjectDto;
+import com.jklas.search.index.dto.IndexObject;
 
 
 public class SearchLibrary {
@@ -45,10 +45,10 @@ public class SearchLibrary {
 		return (double)Math.round( Math.floor(number * scale))/ scale;
 	}
 	
-	public static List<Object> convertDtoListToEntityList(List<IndexObjectDto> indexObjectDto) {
+	public static List<Object> convertDtoListToEntityList(List<IndexObject> indexObjectDto) {
 		List<Object> entities = new ArrayList<Object>(indexObjectDto.size());
 
-		for (IndexObjectDto dto : indexObjectDto) {
+		for (IndexObject dto : indexObjectDto) {
 			entities.add(dto);
 		}
 		return entities;

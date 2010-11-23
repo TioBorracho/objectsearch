@@ -17,26 +17,31 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package com.jklas.search.index;
+package com.jklas.search.engine.operations;
 
-import com.jklas.search.index.dto.IndexObject;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-public interface IndexWriter {
+import com.jklas.search.engine.Language;
+import com.jklas.search.index.Term;
 
-    public abstract void open();
-    
-    public abstract void open(IndexId indexId);
-    
-    public abstract void close();
+public class MultiLanguageStopWordCleaner implements StopWordCleaner {
 
-    public abstract void write(Term term, ObjectKey key, PostingMetadata metadata);
+	private Map<Language, SingleLanguageStopWordCleaner> singleLangProcessors = new HashMap<Language, SingleLanguageStopWordCleaner>();
+	
+	public void setStopWords(Language language, Set<Term> stopWords) {
+		singleLangProcessors.put(language,new SingleLanguageStopWordCleaner(language, stopWords));
+	}
 
-    public abstract void openDeleteAndClose(IndexObject indexObjectDto);
-    
-    public void openWriteAndClose(Term term, ObjectKey key, PostingMetadata metadata);
-    
-    public void openWriteAndClose(IndexId indexName, Term term, ObjectKey key, PostingMetadata metadata);
-
-	public void delete(IndexObject indexObjectDto);
-
+	public void deleteStopWords(Language language, List<Term> tokens) {
+		SingleLanguageStopWordCleaner cleaner = singleLangProcessors.get(language);
+		
+		if(cleaner != null) {
+			cleaner.deleteStopWords(tokens);
+		}
+	}
+	
+	
 }

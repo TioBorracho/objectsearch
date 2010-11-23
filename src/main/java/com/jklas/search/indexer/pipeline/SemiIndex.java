@@ -27,17 +27,17 @@ import java.util.Map.Entry;
 
 import com.jklas.search.index.PostingMetadata;
 import com.jklas.search.index.Term;
-import com.jklas.search.index.dto.IndexObjectDto;
+import com.jklas.search.index.dto.IndexObject;
 
 public class SemiIndex {
 
-	private Map<IndexObjectDto,Map<Term, PostingMetadata>> semiIndexMap;
+	private Map<IndexObject,Map<Term, PostingMetadata>> semiIndexMap;
 	
 	public SemiIndex() {
-		semiIndexMap = new HashMap<IndexObjectDto,Map<Term, PostingMetadata>>();
+		semiIndexMap = new HashMap<IndexObject,Map<Term, PostingMetadata>>();
 	}
 	
-	public SemiIndex(IndexObjectDto indexObjectDto, Map<Term, PostingMetadata> map) {
+	public SemiIndex(IndexObject indexObjectDto, Map<Term, PostingMetadata> map) {
 		this();
 		semiIndexMap.put(indexObjectDto,map);
 	}
@@ -45,19 +45,19 @@ public class SemiIndex {
 	public SemiIndex(SemiIndex other) {
 		this();
 				
-		for (Entry<IndexObjectDto,Map<Term, PostingMetadata>> entry : other.getSemiIndexMap().entrySet()) {
+		for (Entry<IndexObject,Map<Term, PostingMetadata>> entry : other.getSemiIndexMap().entrySet()) {
 			semiIndexMap.put(entry.getKey(), entry.getValue());
 		}
 	}
 
-	public Map<IndexObjectDto, Map<Term, PostingMetadata>> getSemiIndexMap() {
+	public Map<IndexObject, Map<Term, PostingMetadata>> getSemiIndexMap() {
 		return semiIndexMap;
 	}
 
 	public void setReferences(Object entity) {
-		Map<IndexObjectDto,Map<Term, PostingMetadata>> newSemiIndexMap = new HashMap<IndexObjectDto,Map<Term, PostingMetadata>>();  
+		Map<IndexObject,Map<Term, PostingMetadata>> newSemiIndexMap = new HashMap<IndexObject,Map<Term, PostingMetadata>>();  
 
-		IndexObjectDto key = new IndexObjectDto(entity);
+		IndexObject key = new IndexObject(entity);
 		
 		for (Map<Term, PostingMetadata> value : semiIndexMap.values()) {
 			newSemiIndexMap.put(key, new HashMap<Term, PostingMetadata>(value));			
@@ -67,9 +67,9 @@ public class SemiIndex {
 	}
 	
 	public void merge(SemiIndex otherSemiIndex) {		
-		Map<IndexObjectDto, Map<Term, PostingMetadata>> semiIndexMapToMerge = otherSemiIndex.getSemiIndexMap();
+		Map<IndexObject, Map<Term, PostingMetadata>> semiIndexMapToMerge = otherSemiIndex.getSemiIndexMap();
 		
-		for (IndexObjectDto objectToMerge : semiIndexMapToMerge.keySet())
+		for (IndexObject objectToMerge : semiIndexMapToMerge.keySet())
 		{
 			Map<Term, PostingMetadata> termMetadataMapToMerge = semiIndexMapToMerge.get(objectToMerge);
 

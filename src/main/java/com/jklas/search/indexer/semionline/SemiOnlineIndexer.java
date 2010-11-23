@@ -22,7 +22,7 @@ package com.jklas.search.indexer.semionline;
 import java.util.List;
 
 import com.jklas.search.exception.IndexObjectException;
-import com.jklas.search.index.dto.IndexObjectDto;
+import com.jklas.search.index.dto.IndexObject;
 import com.jklas.search.indexer.IndexerAction;
 import com.jklas.search.indexer.IndexerService;
 import com.jklas.search.util.SearchLibrary;
@@ -41,11 +41,11 @@ public class SemiOnlineIndexer implements IndexerService {
 	@Override
 	public void create(Object entity) throws IndexObjectException {
 		checkForDestroy();
-		this.workerPool.newTask(IndexerAction.CREATE, new IndexObjectDto(entity));
+		this.workerPool.newTask(IndexerAction.CREATE, new IndexObject(entity));
 	}
 
 	@Override
-	public void create(IndexObjectDto indexObjectDto) throws IndexObjectException {
+	public void create(IndexObject indexObjectDto) throws IndexObjectException {
 		checkForDestroy();
 		this.workerPool.newTask(IndexerAction.CREATE, indexObjectDto);
 	}
@@ -53,11 +53,11 @@ public class SemiOnlineIndexer implements IndexerService {
 	@Override
 	public void createOrUpdate(Object entity) throws IndexObjectException {
 		checkForDestroy();
-		this.workerPool.newTask(IndexerAction.CREATE_OR_UPDATE, new IndexObjectDto(entity));
+		this.workerPool.newTask(IndexerAction.CREATE_OR_UPDATE, new IndexObject(entity));
 	}
 
 	@Override
-	public void createOrUpdate(IndexObjectDto indexObjectDto) throws IndexObjectException {
+	public void createOrUpdate(IndexObject indexObjectDto) throws IndexObjectException {
 		checkForDestroy();
 		this.workerPool.newTask(IndexerAction.CREATE_OR_UPDATE, indexObjectDto);
 	}
@@ -65,11 +65,11 @@ public class SemiOnlineIndexer implements IndexerService {
 	@Override
 	public void delete(Object entity) throws IndexObjectException {
 		checkForDestroy();
-		this.workerPool.newTask(IndexerAction.DELETE, new IndexObjectDto(entity));
+		this.workerPool.newTask(IndexerAction.DELETE, new IndexObject(entity));
 	}
 
 	@Override
-	public void delete(IndexObjectDto indexObjectDto) throws IndexObjectException {
+	public void delete(IndexObject indexObjectDto) throws IndexObjectException {
 		checkForDestroy();
 		this.workerPool.newTask(IndexerAction.DELETE, indexObjectDto);
 	}
@@ -77,11 +77,11 @@ public class SemiOnlineIndexer implements IndexerService {
 	@Override
 	public void update(Object entity) throws IndexObjectException {
 		checkForDestroy();
-		this.workerPool.newTask(IndexerAction.UPDATE, new IndexObjectDto(entity));
+		this.workerPool.newTask(IndexerAction.UPDATE, new IndexObject(entity));
 	}
 
 	@Override
-	public void update(IndexObjectDto indexObjectDto) throws IndexObjectException {
+	public void update(IndexObject indexObjectDto) throws IndexObjectException {
 		checkForDestroy();
 		this.workerPool.newTask(IndexerAction.UPDATE, indexObjectDto);
 	}
@@ -133,22 +133,22 @@ public class SemiOnlineIndexer implements IndexerService {
 	}
 
 	@Override
-	public void bulkDtoCreate(List<IndexObjectDto> indexObjectDto) throws IndexObjectException {
+	public void bulkDtoCreate(List<IndexObject> indexObjectDto) throws IndexObjectException {
 		bulkCreate(SearchLibrary.convertDtoListToEntityList(indexObjectDto));
 	}
 
 	@Override
-	public void bulkDtoCreateOrUpdate(List<IndexObjectDto> indexObjectDto) throws IndexObjectException {
+	public void bulkDtoCreateOrUpdate(List<IndexObject> indexObjectDto) throws IndexObjectException {
 		bulkCreateOrUpdate(SearchLibrary.convertDtoListToEntityList(indexObjectDto));
 	}
 
 	@Override
-	public void bulkDtoDelete(List<IndexObjectDto> indexObjectDto) throws IndexObjectException {
+	public void bulkDtoDelete(List<IndexObject> indexObjectDto) throws IndexObjectException {
 		bulkDelete(SearchLibrary.convertDtoListToEntityList(indexObjectDto));
 	}
 
 	@Override
-	public void bulkDtoUpdate(List<IndexObjectDto> indexObjectDto) throws IndexObjectException {
+	public void bulkDtoUpdate(List<IndexObject> indexObjectDto) throws IndexObjectException {
 		bulkUpdate(SearchLibrary.convertDtoListToEntityList(indexObjectDto));
 	}
 

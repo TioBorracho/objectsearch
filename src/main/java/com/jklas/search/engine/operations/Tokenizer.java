@@ -1,3 +1,9 @@
+package com.jklas.search.engine.operations;
+
+import java.util.List;
+
+import com.jklas.search.index.Term;
+
 /**
  * Object Search Framework
  *
@@ -17,26 +23,8 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package com.jklas.search.index;
+public interface Tokenizer {
 
-import com.jklas.search.index.dto.IndexObject;
-
-public interface IndexWriter {
-
-    public abstract void open();
-    
-    public abstract void open(IndexId indexId);
-    
-    public abstract void close();
-
-    public abstract void write(Term term, ObjectKey key, PostingMetadata metadata);
-
-    public abstract void openDeleteAndClose(IndexObject indexObjectDto);
-    
-    public void openWriteAndClose(Term term, ObjectKey key, PostingMetadata metadata);
-    
-    public void openWriteAndClose(IndexId indexName, Term term, ObjectKey key, PostingMetadata metadata);
-
-	public void delete(IndexObject indexObjectDto);
+	public abstract List<Term> tokenize(String text);
 
 }

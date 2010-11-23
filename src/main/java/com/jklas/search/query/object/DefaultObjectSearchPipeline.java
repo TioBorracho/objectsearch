@@ -31,7 +31,7 @@ import com.jklas.search.index.IndexId;
 import com.jklas.search.index.ObjectKey;
 import com.jklas.search.index.PostingMetadata;
 import com.jklas.search.index.Term;
-import com.jklas.search.index.dto.IndexObjectDto;
+import com.jklas.search.index.dto.IndexObject;
 import com.jklas.search.indexer.pipeline.DefaultIndexingPipeline;
 import com.jklas.search.indexer.pipeline.SemiIndex;
 
@@ -49,8 +49,8 @@ public class DefaultObjectSearchPipeline implements ObjectSearchPipeline {
 		List<ObjectSearchElement> searchElements = new ArrayList<ObjectSearchElement>();
 				
 		
-		for (Entry<IndexObjectDto, Map<Term,PostingMetadata>> semiIndexEntry: semiIndex.getSemiIndexMap().entrySet()) {
-			IndexObjectDto current = semiIndexEntry.getKey();
+		for (Entry<IndexObject, Map<Term,PostingMetadata>> semiIndexEntry: semiIndex.getSemiIndexMap().entrySet()) {
+			IndexObject current = semiIndexEntry.getKey();
 
 			IndexId currentIndexId = current.getIndexId();
 

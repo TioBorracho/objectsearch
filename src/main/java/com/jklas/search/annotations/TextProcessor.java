@@ -24,6 +24,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.jklas.search.engine.NullStopWordProvider;
+import com.jklas.search.engine.operations.StopWordProvider;
 import com.jklas.search.engine.processor.DefaultObjectTextProcessor;
 import com.jklas.search.engine.processor.ObjectTextProcessor;
 
@@ -46,4 +48,7 @@ public @interface TextProcessor {
 	 * of the fields of this type
 	 */
 	Class<? extends ObjectTextProcessor> value() default DefaultObjectTextProcessor.class;
+	
+	Class<? extends StopWordProvider> stopWordProvider() default NullStopWordProvider.class;
+	
 }

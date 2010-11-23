@@ -37,7 +37,7 @@ public class Term implements Serializable {
 	
 	@Override
 	public int hashCode() {		
-		return value.hashCode();
+		return value.toLowerCase().hashCode();
 	}
 
 	@Override
