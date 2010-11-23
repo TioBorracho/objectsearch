@@ -11,7 +11,7 @@ public class SpanishNumberStemmerTest {
 
 	@Test
 	public void StemmerIsCaseInsensitive() {
-		SpanishNumberStemmer spanishNumberStemmer = new SpanishNumberStemmer();
+		SpanishLightStemmer spanishNumberStemmer = new SpanishLightStemmer();
 		Term stemFromPlural = spanishNumberStemmer.stem(new Term("trabajos"));
 		Term stemFromSingular = spanishNumberStemmer.stem(new Term("trabajo"));
 		

@@ -28,6 +28,6 @@ package com.jklas.search.engine.stemming;
  */
 public enum StemType  {
 	FULL_STEM,
-	NUMBER_STEM,
+	LIGHT_STEM,
 	NO_STEM;
 }

@@ -55,7 +55,7 @@ import com.jklas.search.engine.processor.OneTermTextProcessor;
 import com.jklas.search.engine.stemming.EnglishSnowballStemmingStrategy;
 import com.jklas.search.engine.stemming.SpanishSnowballStemmingStrategy;
 import com.jklas.search.engine.stemming.StemType;
-import com.jklas.search.engine.stemming.snowball.SpanishNumberStemmer;
+import com.jklas.search.engine.stemming.snowball.SpanishLightStemmer;
 import com.jklas.search.exception.IndexObjectException;
 import com.jklas.search.exception.SearchEngineMappingException;
 import com.jklas.search.index.PostingMetadata;
@@ -372,7 +372,7 @@ public class DefaultIndexerPipelineTest {
 		private int id = 1;
 		
 		@SuppressWarnings("unused")
-		@SearchField @Stemming(stemType=StemType.NUMBER_STEM,strategy=SpanishSnowballStemmingStrategy.class)
+		@SearchField @Stemming(stemType=StemType.LIGHT_STEM,strategy=SpanishSnowballStemmingStrategy.class)
 		private String value = "";
 		
 		public void setValue(String value) {
@@ -399,7 +399,7 @@ public class DefaultIndexerPipelineTest {
 		
 		Assert.assertEquals( 1, termPostingMap.size() );
 		
-		SpanishNumberStemmer spanishNumberStemmer = new SpanishNumberStemmer();
+		SpanishLightStemmer spanishNumberStemmer = new SpanishLightStemmer();
 		Term directStem = spanishNumberStemmer.stem(new Term("trabajos"));
 		
 		for ( Map.Entry<Term, PostingMetadata> postings	: termPostingMap.entrySet() ) {

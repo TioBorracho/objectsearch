@@ -30,7 +30,7 @@ import com.jklas.search.index.Term;
  * It implements the stemming algorithm defined by a snowball script.
  */
 
-public class SpanishNumberStemmer implements Stemmer {
+public class SpanishLightStemmer implements Stemmer {
 
 	@Override
 	public Term stem(Term original) {

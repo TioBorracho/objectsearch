@@ -20,7 +20,7 @@
 package com.jklas.search.engine.stemming;
 
 import com.jklas.search.engine.Language;
-import com.jklas.search.engine.stemming.snowball.SpanishNumberStemmer;
+import com.jklas.search.engine.stemming.snowball.SpanishLightStemmer;
 import com.jklas.search.engine.stemming.snowball.SpanishStemmer;
 
 public class SpanishSnowballStemmingStrategy implements StemmerStrategy {
@@ -30,6 +30,6 @@ public class SpanishSnowballStemmingStrategy implements StemmerStrategy {
 		if(stemType == StemType.FULL_STEM)
 			return new SpanishStemmer();
 		else 
-			return new SpanishNumberStemmer();
+			return new SpanishLightStemmer();
 	}
 }
