@@ -42,11 +42,11 @@ public class DefaultQueryTextProcessor implements QueryTextProcessor {
 
 	private Tokenizer tokenizer ;
 
-	private StemmingOperation stemmingOperation ;
+	private final StemmingOperation stemmingOperation = new StemmingOperation() ;
 
-	private final StemmerStrategy stemmerStrategy;
+	private StemmerStrategy stemmerStrategy;
 
-	private final StemType stemType;
+	private StemType stemType;
 
 	public DefaultQueryTextProcessor() {
 		this(new MultiLanguageStopWordCleaner(), new UpperCaseNoSymbolTextNormalizer("+"), 
@@ -63,7 +63,6 @@ public class DefaultQueryTextProcessor implements QueryTextProcessor {
 		setStopWordProcessor(cleaner);
 		setTextNormalizer(normalizer);
 		setTokenizer(tokenizer);
-		setStemmingOperation(operation);
 		this.stemmerStrategy = stemmerStrategy ; 
 		this.stemType = stemType ; 
 	}
@@ -92,10 +91,6 @@ public class DefaultQueryTextProcessor implements QueryTextProcessor {
 		return fieldTokens;
 	}
 	
-	public void setStemmingOperation(StemmingOperation stemmingOperation) {
-		this.stemmingOperation = stemmingOperation;
-	}
-	
 	public void setStopWordProcessor(
 			MultiLanguageStopWordCleaner stopWordProcessor) {
 		this.stopWordProcessor = stopWordProcessor;
@@ -108,5 +103,13 @@ public class DefaultQueryTextProcessor implements QueryTextProcessor {
 	public void setTokenizer(Tokenizer tokenizer) {
 		this.tokenizer = tokenizer;
 	}
-
+	
+	public void setStemmerStrategy(StemmerStrategy stemmerStrategy) {
+		this.stemmerStrategy = stemmerStrategy;
+	}
+	
+	public void setStemType(StemType stemType) {
+		this.stemType = stemType;
+	}
+	
 }

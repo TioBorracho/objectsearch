@@ -20,7 +20,9 @@
 package com.jklas.search.indexer;
 
 import java.lang.reflect.Field;
+import java.util.HashSet;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -32,7 +34,15 @@ import com.jklas.search.annotations.Indexable;
 import com.jklas.search.annotations.SearchField;
 import com.jklas.search.annotations.SearchFilter;
 import com.jklas.search.annotations.SearchId;
+import com.jklas.search.annotations.Stemming;
+import com.jklas.search.annotations.TextProcessor;
 import com.jklas.search.configuration.AnnotationConfigurationMapper;
+import com.jklas.search.engine.Language;
+import com.jklas.search.engine.operations.StopWordCleaner;
+import com.jklas.search.engine.operations.StopWordProvider;
+import com.jklas.search.engine.processor.DefaultObjectTextProcessor;
+import com.jklas.search.engine.stemming.SpanishSnowballStemmingStrategy;
+import com.jklas.search.engine.stemming.StemType;
 import com.jklas.search.exception.IndexObjectException;
 import com.jklas.search.exception.SearchEngineException;
 import com.jklas.search.exception.SearchEngineMappingException;
@@ -446,6 +456,113 @@ public class DefaultIndexerServiceTest {
 		
 	}
 	
+	private static class HardcodedProvider implements StopWordProvider {
+		@Override
+		public void provideStopWords(Language language, StopWordCleaner cleaner) {
+			Set<Term> stopWords = new HashSet<Term>();
+			if(language.getIdentifier().equals("es")) {
+				stopWords.add(new Term("De"));
+			} else {
+				stopWords.add(new Term("Is"));
+				stopWords.add(new Term("Of"));
+			}
+			cleaner.setStopWords(language, stopWords);
+		}
+		
+	}
+	
+	@Indexable
+	private class DummyWithStopWords {
+		@SearchId
+		private int id = 1;
+
+		@SearchField @TextProcessor(value=DefaultObjectTextProcessor.class,	stopWordProvider=HardcodedProvider.class)
+		private String attribute = "This is full of stop words";
+	}
+	
+	@Test
+	public void StopWordsAreCleaned() throws SearchEngineMappingException, IndexObjectException {
+
+		DummyWithStopWords entity = new DummyWithStopWords();
+		
+		AnnotationConfigurationMapper.configureAndMap(entity);
+		
+		DefaultIndexingPipeline indexingPipeline = new DefaultIndexingPipeline();		
+		DefaultIndexerService idxService = new DefaultIndexerService(indexingPipeline, MemoryIndexWriterFactory.getInstance());
+				
+		idxService.create(entity);		
+						
+		Assert.assertNotNull( MemoryIndex.getDefaultIndex().getPostingList(new Term("This")) );
+		Assert.assertNull( MemoryIndex.getDefaultIndex().getPostingList(new Term("is")) );
+		Assert.assertNotNull( MemoryIndex.getDefaultIndex().getPostingList(new Term("full")) );
+		Assert.assertNull( MemoryIndex.getDefaultIndex().getPostingList(new Term("of")) );
+		Assert.assertNotNull( MemoryIndex.getDefaultIndex().getPostingList(new Term("stop")) );
+		Assert.assertNotNull( MemoryIndex.getDefaultIndex().getPostingList(new Term("words")) );
+				
+		Assert.assertEquals(MemoryIndex.getDefaultIndex().getObjectCount(),1);		
+	}
+	
+	@Indexable
+	private class DummyWithStemming {
+		@SearchId
+		private int id = 1;
+		
+		@SearchField @TextProcessor(value=DefaultObjectTextProcessor.class,	stopWordProvider=HardcodedProvider.class)
+		@Stemming(stemType=StemType.FULL_STEM,strategy=SpanishSnowballStemmingStrategy.class)
+		private String attribute = "Estas palabras deben ser stemmeadas";
+	}
+	
+	@Test
+	public void FullStemmingIsApplied() throws SearchEngineMappingException, IndexObjectException {
+
+		DummyWithStemming entity = new DummyWithStemming();
+		
+		AnnotationConfigurationMapper.configureAndMap(entity);
+		
+		DefaultIndexingPipeline indexingPipeline = new DefaultIndexingPipeline();		
+		DefaultIndexerService idxService = new DefaultIndexerService(indexingPipeline, MemoryIndexWriterFactory.getInstance());
+				
+		idxService.create(entity);		
+						
+		Assert.assertNotNull( MemoryIndex.getDefaultIndex().getPostingList(new Term("Estas")) );
+		Assert.assertNotNull( MemoryIndex.getDefaultIndex().getPostingList(new Term("palabr")) );
+		Assert.assertNotNull( MemoryIndex.getDefaultIndex().getPostingList(new Term("deb")) );
+		Assert.assertNotNull( MemoryIndex.getDefaultIndex().getPostingList(new Term("ser")) );
+		Assert.assertNotNull( MemoryIndex.getDefaultIndex().getPostingList(new Term("stemm")) );
+				
+		Assert.assertEquals(MemoryIndex.getDefaultIndex().getObjectCount(),1);		
+	}
+	
+	@Indexable
+	private class DummyWithLightStemming {
+		@SearchId
+		private int id = 1;
+		
+		@SearchField @TextProcessor(value=DefaultObjectTextProcessor.class,	stopWordProvider=HardcodedProvider.class)
+		@Stemming(stemType=StemType.LIGHT_STEM,strategy=SpanishSnowballStemmingStrategy.class)
+		private String attribute = "Estas palabras deben ser stemmeadas";
+	}
+	
+	@Test
+	public void LightStemmingIsApplied() throws SearchEngineMappingException, IndexObjectException {
+
+		DummyWithLightStemming entity = new DummyWithLightStemming();
+		
+		AnnotationConfigurationMapper.configureAndMap(entity);
+		
+		DefaultIndexingPipeline indexingPipeline = new DefaultIndexingPipeline();		
+		DefaultIndexerService idxService = new DefaultIndexerService(indexingPipeline, MemoryIndexWriterFactory.getInstance());
+				
+		idxService.create(entity);		
+						
+		Assert.assertNotNull( MemoryIndex.getDefaultIndex().getPostingList(new Term("Est")) );
+		Assert.assertNotNull( MemoryIndex.getDefaultIndex().getPostingList(new Term("palabr")) );
+		Assert.assertNotNull( MemoryIndex.getDefaultIndex().getPostingList(new Term("deben")) );
+		Assert.assertNotNull( MemoryIndex.getDefaultIndex().getPostingList(new Term("ser")) );
+		Assert.assertNotNull( MemoryIndex.getDefaultIndex().getPostingList(new Term("stemmead")) );
+				
+		Assert.assertEquals(MemoryIndex.getDefaultIndex().getObjectCount(),1);		
+	}
 	
 	private DefaultIndexerService getDefaultIndexServiceForMemoryIndex(MasterAndInvertedIndex memoryIndex) {
 		DefaultIndexingPipeline indexingPipeline = new DefaultIndexingPipeline();		

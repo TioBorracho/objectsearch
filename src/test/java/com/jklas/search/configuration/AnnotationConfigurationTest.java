@@ -478,7 +478,7 @@ public class AnnotationConfigurationTest {
 		private String attribute = "This is full of stop words";
 		
 		@SearchField @TextProcessor(value=DefaultObjectTextProcessor.class,
-				stopWordProvider=HardcodedProvider.class) @LangId("es")
+				stopWordProvider=HardcodedProvider.class)
 		private String overrided = "This is full of stop words";
 	}
 	

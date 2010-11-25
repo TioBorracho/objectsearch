@@ -36,7 +36,11 @@ import com.jklas.search.engine.Language;
 import com.jklas.search.engine.VectorSearch;
 import com.jklas.search.engine.dto.SingleTermObjectResult;
 import com.jklas.search.engine.dto.VectorRankedResult;
+import com.jklas.search.engine.processor.DefaultQueryTextProcessor;
 import com.jklas.search.engine.processor.QueryTextProcessor;
+import com.jklas.search.engine.stemming.SpanishSnowballStemmingStrategy;
+import com.jklas.search.engine.stemming.StemType;
+import com.jklas.search.engine.stemming.snowball.SpanishStemmer;
 import com.jklas.search.exception.SearchEngineException;
 import com.jklas.search.exception.SearchEngineMappingException;
 import com.jklas.search.index.Term;
@@ -164,6 +168,25 @@ public class VectorialRetrievalTest {
 		Assert.assertTrue(query.getRootOperator() instanceof RetrieveOperator<?>);		
 	}
 
+	@Test
+	public void StemmingIsApplied() {
+		
+		String word = "palabras";
+		
+		DefaultQueryTextProcessor textProcessor = new DefaultQueryTextProcessor();
+		
+		textProcessor.setStemmerStrategy(new SpanishSnowballStemmingStrategy() );
+		textProcessor.setStemType(StemType.FULL_STEM);
+		
+		VectorQueryParser parser = new VectorQueryParser(word, textProcessor);
+		
+		VectorQuery query = parser.getQuery();		
+		
+		Term term = new Term(word);
+		Term stemmedWord = new SpanishStemmer().stem(term);
+		
+		Assert.assertTrue(query.getTerms().contains(stemmedWord));
+	}
 
 	// -- RETRIEVAL
 
